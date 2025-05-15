@@ -138,7 +138,36 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\OpenGL\OpenGL\glad.c" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameEvent.cpp" />
+    <ClCompile Include="GameEvents.cpp" />
+    <ClCompile Include="GameEventWindowResized.cpp" />
+    <ClCompile Include="GLADWrapper.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderFragment.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="ShaderVertex.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="GameEvent.h" />
+    <ClInclude Include="GameEvents.h" />
+    <ClInclude Include="GameEventWindowResized.h" />
+    <ClInclude Include="GLADWrapper.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderFragment.h" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Shaders.h" />
+    <ClInclude Include="ShaderVertex.h" />
+    <ClInclude Include="SnookerImport.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
