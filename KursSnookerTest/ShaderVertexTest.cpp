@@ -1,4 +1,4 @@
-#include "pch.h"
+//#include "pch.h"
 //#include "ShaderVertex.h"
 
 //class ShaderVertexTest : public testing::Test {

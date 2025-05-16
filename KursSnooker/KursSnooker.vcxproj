@@ -112,11 +112,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -127,46 +128,63 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\OpenGL\OpenGL\glad.c" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameEvent.cpp" />
     <ClCompile Include="GameEvents.cpp" />
     <ClCompile Include="GameEventWindowResized.cpp" />
     <ClCompile Include="GLADWrapper.cpp" />
+    <ClCompile Include="ImageLoaderSTB.cpp" />
+    <ClCompile Include="Indices.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Models.cpp" />
+    <ClCompile Include="ObjectAssimpParser.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderFragment.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="ShaderVertex.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="Textures.cpp" />
+    <ClCompile Include="Vertices.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Desktop\Lessons\Projects\OpenGL\Libs\Libs\stb_image.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameEvent.h" />
     <ClInclude Include="GameEvents.h" />
     <ClInclude Include="GameEventWindowResized.h" />
     <ClInclude Include="GLADWrapper.h" />
+    <ClInclude Include="ImageLoaderSTB.h" />
+    <ClInclude Include="Indices.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Models.h" />
+    <ClInclude Include="ObjectAssimpParser.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderFragment.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="ShaderVertex.h" />
     <ClInclude Include="SnookerImport.h" />
+    <ClInclude Include="Textures.h" />
+    <ClInclude Include="Vertices.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -12,3 +12,5 @@
 #include "Shaders.h"
 #include "Model.h"
 #include "Mesh.h"
+#include "ObjectAssimpParser.h"
+#include "ImageLoaderSTB.h"
