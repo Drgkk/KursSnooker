@@ -1,0 +1,62 @@
+# Blender 4.4.3 MTL File: 'None'
+# www.blender.org
+
+newmtl Decals_Mat
+Ns 200.000000
+Ka 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Decals_Mat/Decals_Mat_Base_color.png
+
+newmtl Glass_Mat
+Ns 26.242031
+Ka 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Glass_Mat/Glass_Mat_Base_color.png
+
+newmtl Glass_Opacity_Mat
+Ns 200.000000
+Ka 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 0.174194
+illum 6
+map_Kd Glass_Opacity_Mat/Glass_Opacity_Mat_Base_color.png
+
+newmtl Gold_Mat
+Ns 200.000000
+Ka 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Gold_Mat/Gold_Mat_Base_color.png
+
+newmtl Tardis_Metal_Mat
+Ns 55.853661
+Ka 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Tardis_Metal_Mat/Tardis_Metal_Mat_Base_color.png
+
+newmtl Tardis_Wood_Mat
+Ns 200.000000
+Ka 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Tardis_Wood_Mat/Tardis_Wood_Mat_Base_color.png

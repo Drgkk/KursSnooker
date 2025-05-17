@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,16 +148,23 @@
     <ClCompile Include="GLADWrapper.cpp" />
     <ClCompile Include="ImageLoaderSTB.cpp" />
     <ClCompile Include="Indices.cpp" />
+    <ClCompile Include="LightSource.cpp" />
+    <ClCompile Include="LightSourceSettings.cpp" />
+    <ClCompile Include="LightSourceSettingsPoint.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Models.cpp" />
     <ClCompile Include="ObjectAssimpParser.cpp" />
+    <ClCompile Include="RegularSceneBuilder.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneBuilder.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderFragment.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Shaders.cpp" />
     <ClCompile Include="ShaderVertex.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Vertices.cpp" />
@@ -173,16 +180,23 @@
     <ClInclude Include="GLADWrapper.h" />
     <ClInclude Include="ImageLoaderSTB.h" />
     <ClInclude Include="Indices.h" />
+    <ClInclude Include="LightSource.h" />
+    <ClInclude Include="LightSourceSettings.h" />
+    <ClInclude Include="LightSourceSettingsPoint.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Models.h" />
     <ClInclude Include="ObjectAssimpParser.h" />
+    <ClInclude Include="RegularSceneBuilder.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneBuilder.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderFragment.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Shaders.h" />
     <ClInclude Include="ShaderVertex.h" />
     <ClInclude Include="SnookerImport.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Vertices.h" />
     <ClInclude Include="Window.h" />

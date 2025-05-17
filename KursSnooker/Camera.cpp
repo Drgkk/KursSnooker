@@ -28,6 +28,7 @@ glm::mat4 Camera::GetViewMatrix()
 void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
     float velocity = MovementSpeed * deltaTime;
+
     if (direction == FORWARD)
         Position += Front * velocity;
     if (direction == BACKWARD)
@@ -42,6 +43,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 {
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
+
 
     Yaw += xoffset;
     Pitch += yoffset;

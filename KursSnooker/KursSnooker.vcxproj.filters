@@ -84,6 +84,27 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSourceSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LightSourceSettingsPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RegularSceneBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -150,6 +171,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSourceSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSourceSettingsPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegularSceneBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

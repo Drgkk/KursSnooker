@@ -14,3 +14,7 @@
 #include "Mesh.h"
 #include "ObjectAssimpParser.h"
 #include "ImageLoaderSTB.h"
+#include "LightSource.h"
+#include "LightSourceSettings.h"
+#include "SceneBuilder.h"
+#include "RegularSceneBuilder.h"

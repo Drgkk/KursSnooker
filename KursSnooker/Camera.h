@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 enum Camera_Movement {
 	FORWARD,
@@ -12,7 +13,7 @@ enum Camera_Movement {
 
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
-const float SPEED = 7.5f;
+const float SPEED = 5.5f;
 const float SENSITIVITY = 0.3f;
 const float ZOOM = 45.0f;
 

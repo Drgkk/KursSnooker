@@ -14,8 +14,15 @@
 #include "Textures.h"
 #include "Vertices.h"
 #include "Model.h"
+#include "Mesh.h"
+#include "ImageLoaderSTB.h"
 
-template<typename Mesh, typename ImageLoader>
+template<typename ObjectParser,
+	typename MeshT>
+class Model;
+
+template<typename MeshT = Mesh,
+	typename ImageLoader = ImageLoaderSTB>
 class ObjectAssimpParser
 {
 public:
@@ -27,23 +34,23 @@ private:
 	std::string directory;
 	void setDirectory(std::string s);
 	void processNode(aiNode *node, const aiScene *scene, Model<ObjectAssimpParser, Mesh>& model);
-	Mesh processMesh(aiMesh* mesh, const aiScene* scene, Model<ObjectAssimpParser, Mesh>& model);
+	MeshT processMesh(aiMesh* mesh, const aiScene* scene, Model<ObjectAssimpParser, Mesh>& model);
 	Textures loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, Model<ObjectAssimpParser, Mesh>& model);
 	unsigned int TextureFromFile(const char* path, const std::string& directory);
 };
 
 
 
-template<typename Mesh, typename ImageLoader>
-ObjectAssimpParser<Mesh, ImageLoader>::ObjectAssimpParser()
+template<typename MeshT, typename ImageLoader>
+ObjectAssimpParser<MeshT, ImageLoader>::ObjectAssimpParser()
 {
 }
 
-template<typename Mesh, typename ImageLoader>
-void ObjectAssimpParser<Mesh, ImageLoader>::Parse(std::string const& path, Model<ObjectAssimpParser, Mesh>& model)
+template<typename MeshT, typename ImageLoader>
+void ObjectAssimpParser<MeshT, ImageLoader>::Parse(std::string const& path, Model<ObjectAssimpParser, Mesh>& model)
 {
 	Assimp::Importer importer;
-	this->scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	this->scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals /*| aiProcess_FlipUVs*/ | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
 		return;
@@ -52,14 +59,14 @@ void ObjectAssimpParser<Mesh, ImageLoader>::Parse(std::string const& path, Model
 	processNode(scene->mRootNode, scene, model);
 }
 
-template<typename Mesh, typename ImageLoader>
-void ObjectAssimpParser<Mesh, ImageLoader>::setDirectory(std::string s)
+template<typename MeshT, typename ImageLoader>
+void ObjectAssimpParser<MeshT, ImageLoader>::setDirectory(std::string s)
 {
 	this->directory = s;
 }
 
-template<typename Mesh, typename ImageLoader>
-void ObjectAssimpParser<Mesh, ImageLoader>::processNode(aiNode* node, const aiScene* scene, Model<ObjectAssimpParser, Mesh>& model)
+template<typename MeshT, typename ImageLoader>
+void ObjectAssimpParser<MeshT, ImageLoader>::processNode(aiNode* node, const aiScene* scene, Model<ObjectAssimpParser, Mesh>& model)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -70,8 +77,8 @@ void ObjectAssimpParser<Mesh, ImageLoader>::processNode(aiNode* node, const aiSc
 	}
 }
 
-template<typename Mesh, typename ImageLoader>
-Mesh ObjectAssimpParser<Mesh, ImageLoader>::processMesh(aiMesh* mesh, const aiScene* scene, Model<ObjectAssimpParser, Mesh>& model)
+template<typename MeshT, typename ImageLoader>
+MeshT ObjectAssimpParser<MeshT, ImageLoader>::processMesh(aiMesh* mesh, const aiScene* scene, Model<ObjectAssimpParser, Mesh>& model)
 {
 	Vertices vertices;
 	Indices indices;
@@ -137,8 +144,8 @@ Mesh ObjectAssimpParser<Mesh, ImageLoader>::processMesh(aiMesh* mesh, const aiSc
 	return Mesh(vertices, indices, textures);
 }
 
-template<typename Mesh, typename ImageLoader>
-Textures ObjectAssimpParser<Mesh, ImageLoader>::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, Model<ObjectAssimpParser, Mesh>& model)
+template<typename MeshT, typename ImageLoader>
+Textures ObjectAssimpParser<MeshT, ImageLoader>::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, Model<ObjectAssimpParser, Mesh>& model)
 {
 	Textures textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
@@ -167,8 +174,8 @@ Textures ObjectAssimpParser<Mesh, ImageLoader>::loadMaterialTextures(aiMaterial*
 }
 
 
-template<typename Mesh, typename ImageLoader>
-unsigned int ObjectAssimpParser<Mesh, ImageLoader>::TextureFromFile(const char* path, const std::string& directory)
+template<typename MeshT, typename ImageLoader>
+unsigned int ObjectAssimpParser<MeshT, ImageLoader>::TextureFromFile(const char* path, const std::string& directory)
 {
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
