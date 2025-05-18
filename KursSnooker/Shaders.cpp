@@ -1,8 +1,8 @@
 #include "Shaders.h"
 
-void Shaders::AddShader(Shader* shader)
+void Shaders::AddShader(std::unique_ptr<Shader> shader)
 {
-	this->shaders.push_back(shader);
+	this->shaders.push_back(std::move(shader));
 }
 
 void Shaders::AttachProgram(unsigned int shaderProgram)

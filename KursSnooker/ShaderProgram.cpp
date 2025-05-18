@@ -1,6 +1,6 @@
 #include "ShaderProgram.h"
 
-ShaderProgram::ShaderProgram(Shaders& shaders) : shaders(shaders)
+ShaderProgram::ShaderProgram(std::unique_ptr<Shaders> shaders) : shaders(std::move(shaders))
 {
 	ConfigureProgram();
 	CheckConfigurationSuccess();
@@ -16,7 +16,7 @@ void ShaderProgram::ConfigureProgram()
 {
 	SetShaderProgramID(glCreateProgram());
 
-	shaders.AttachProgram(GetShaderProgramID());
+	shaders->AttachProgram(GetShaderProgramID());
 
 	glLinkProgram(GetShaderProgramID());
 	
@@ -35,7 +35,7 @@ void ShaderProgram::CheckConfigurationSuccess()
 
 void ShaderProgram::DeleteShaders()
 {
-	shaders.DeleteShaders();
+	shaders->DeleteShaders();
 }
 
 unsigned int ShaderProgram::GetShaderProgramID() const

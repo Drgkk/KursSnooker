@@ -7,7 +7,16 @@ RegularSceneBuilder::RegularSceneBuilder(SceneConfig cfg) : cfg(cfg)
 
 void RegularSceneBuilder::BuildSprite(SceneSpriteBuilderConfig cfg) const
 {
+	Sprite sprite = CreateSprite(cfg);
+	this->scene.get()->AddSprite(sprite);
+}
+
+Sprite RegularSceneBuilder::CreateSprite(SceneSpriteBuilderConfig& cfg) const
+{
 	ObjectAssimpParser<> objectAssimpParser;
+
+	std::vector<std::unique_ptr<CollisionBoundingVolume>> vec = std::move(cfg.boundingVolumes);
+	
 	Sprite sprite(SpriteConfig{
 		.pos = cfg.pos,
 		.scale = cfg.scale,
@@ -15,17 +24,17 @@ void RegularSceneBuilder::BuildSprite(SceneSpriteBuilderConfig cfg) const
 		.model = std::make_shared<Model<>>(cfg.path, objectAssimpParser),
 		.g = cfg.g
 		});
-	this->scene.get()->AddSprite(sprite);
+	for (int i = 0; i < vec.size(); i++) {
+		sprite.AddBoundingVolume(std::move(vec[i]));
+	}
+
+	return sprite;
 }
 
 void RegularSceneBuilder::BuildLightSource(SceneLightSourceBuilderConfig cfg) const
 {
 	LightSource lightSource(LightSourceConfig{
 		.sprite = cfg.sprite,
-		.ambient = cfg.ambient,
-		.diffuse = cfg.diffuse,
-		.specular = cfg.specular,
-		.intensity = cfg.intensity,
 		.settings = cfg.settings->clone()
 		});
 	this->scene.get()->AddLightSource(lightSource);

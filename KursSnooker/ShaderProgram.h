@@ -16,7 +16,7 @@ class Shaders;
 class ShaderProgram
 {
 public:
-	ShaderProgram(Shaders& shaders);
+	ShaderProgram(std::unique_ptr<Shaders> shaders);
 	void Use();
 	unsigned int GetShaderProgramID() const;
     void setBool(const std::string& name, bool value) const;
@@ -37,6 +37,6 @@ private:
 	void DeleteShaders();
 	void SetShaderProgramID(unsigned int id);
 	unsigned int ID;
-	Shaders& shaders;
+    std::unique_ptr<Shaders> shaders;
 };
 

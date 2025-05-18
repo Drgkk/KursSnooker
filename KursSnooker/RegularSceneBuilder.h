@@ -2,12 +2,15 @@
 #include "SceneBuilder.h"
 #include "Scene.h"
 #include "ObjectAssimpParser.h"
+#include "CollisionBoundingVolume.h"
+#include "OBB.h"
 
 class RegularSceneBuilder : public SceneBuilder
 {
 public:
 	RegularSceneBuilder(SceneConfig cfg);
 	void BuildSprite(SceneSpriteBuilderConfig cfg) const override;
+	Sprite CreateSprite(SceneSpriteBuilderConfig& cfg) const override;
 	void BuildLightSource(SceneLightSourceBuilderConfig cfg) const override;
 	void Reset();
 	std::unique_ptr<Scene> Build();

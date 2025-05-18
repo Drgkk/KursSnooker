@@ -7,11 +7,10 @@
 class Game
 {
 public:
-	Game(std::unique_ptr<Window> w, ShaderProgram& shaderProgram, std::unique_ptr<Scene> scene);
+	Game(std::unique_ptr<Window> w, std::unique_ptr<Scene> scene);
 	void Loop();
 private:
 	std::unique_ptr<Window> window;
-	ShaderProgram& shaderProgram;
 	std::unique_ptr<Scene> scene;
 };
 

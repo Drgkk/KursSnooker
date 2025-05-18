@@ -5,10 +5,10 @@
 class Shaders
 {
 public:
-	void AddShader(Shader* shader);
+	void AddShader(std::unique_ptr<Shader> shader);
 	void AttachProgram(unsigned int shaderProgram);
 	void DeleteShaders();
 private:
-	std::vector<Shader*> shaders;
+	std::vector<std::unique_ptr<Shader>> shaders;
 };
 

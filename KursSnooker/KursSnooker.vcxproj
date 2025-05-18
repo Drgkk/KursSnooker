@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Vadim\Desktop\Lessons\Projects\OpenGL\Libs\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Vadim\Desktop\Lessons\Projects\OpenGL\Libs\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Vadim\source\repos\KursSnooker\KursSnooker\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Vadim\source\repos\KursSnooker\KursSnooker\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\Vadim\Desktop\Lessons\Projects\OpenGL\Libs\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Vadim\Desktop\Lessons\Projects\OpenGL\Libs\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Vadim\source\repos\KursSnooker\KursSnooker\includes;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Vadim\source\repos\KursSnooker\KursSnooker\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -140,7 +140,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\OpenGL\OpenGL\glad.c" />
+    <ClCompile Include="BoundingVolumesBuilder.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionBoundingVolume.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameEvent.cpp" />
     <ClCompile Include="GameEvents.cpp" />
@@ -154,6 +156,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Models.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="ObjectAssimpParser.cpp" />
     <ClCompile Include="RegularSceneBuilder.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -162,6 +165,7 @@
     <ClCompile Include="ShaderFragment.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="ShadersBuilder.cpp" />
     <ClCompile Include="ShaderVertex.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -172,7 +176,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\Desktop\Lessons\Projects\OpenGL\Libs\Libs\stb_image.h" />
+    <ClInclude Include="BoundingVolumesBuilder.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionBoundingVolume.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameEvent.h" />
     <ClInclude Include="GameEvents.h" />
@@ -186,6 +192,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Models.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="ObjectAssimpParser.h" />
     <ClInclude Include="RegularSceneBuilder.h" />
     <ClInclude Include="Scene.h" />
@@ -194,6 +201,7 @@
     <ClInclude Include="ShaderFragment.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="ShadersBuilder.h" />
     <ClInclude Include="ShaderVertex.h" />
     <ClInclude Include="SnookerImport.h" />
     <ClInclude Include="Sprite.h" />

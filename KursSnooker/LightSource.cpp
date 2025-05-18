@@ -3,12 +3,12 @@
 
 
 LightSource::LightSource(LightSourceConfig cfg)
-	: lightSprite(cfg.sprite), ambient(cfg.ambient), diffuse(cfg.diffuse), specular(cfg.specular), intensity(cfg.intensity), settings(std::move(cfg.settings))
+	: lightSprite(cfg.sprite), settings(std::move(cfg.settings))
 {
 }
 
 LightSource::LightSource(const LightSource& other)
-	: lightSprite(other.lightSprite), ambient(other.ambient), diffuse(other.diffuse), specular(other.specular), intensity(other.intensity)
+	: lightSprite(other.lightSprite)
 {
 	if (other.settings)
 		settings = other.settings->clone();
@@ -16,12 +16,13 @@ LightSource::LightSource(const LightSource& other)
 		settings = nullptr;
 }
 
-void LightSource::Draw(ShaderProgram& shaderProgram)
+void LightSource::Draw(ShaderProgram& shaderProgram, float deltaTime, glm::mat4 proj, glm::mat4 view)
 {
-	shaderProgram.setVec3("light.amb", ambient);
-	shaderProgram.setVec3("light.dif", diffuse);
-	shaderProgram.setVec3("light.spc", specular);
-	shaderProgram.setFloat("light.intens", intensity);
-	settings.get()->ApplyParameters(shaderProgram);
-	lightSprite.Draw(shaderProgram, 0.0f);
+	ApplyParameters(shaderProgram);
+	lightSprite.Draw(shaderProgram, deltaTime, proj, view);
+}
+
+void LightSource::ApplyParameters(ShaderProgram& shaderProgram)
+{
+	settings.get()->ApplyParameters(shaderProgram, lightSprite.GetPosition());
 }

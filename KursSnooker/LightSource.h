@@ -11,10 +11,6 @@
 
 struct LightSourceConfig {
 	Sprite sprite;
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
-	float intensity;
 	std::unique_ptr<LightSourceSettings> settings;
 };
 
@@ -23,13 +19,13 @@ class LightSource
 public:
 	LightSource(LightSourceConfig cfg);
 	LightSource(const LightSource &other);
-	void Draw(ShaderProgram &shaderProgram);
+	void Draw(ShaderProgram &shaderProgram, float deltaTime, glm::mat4 proj, glm::mat4 view);
+	void ApplyParameters(ShaderProgram& shaderProgram);
 private:
 	Sprite lightSprite;
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
-	float intensity;
 	std::unique_ptr<LightSourceSettings> settings;
 };
 

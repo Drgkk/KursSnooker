@@ -27,6 +27,7 @@ void Scene::Draw(std::unique_ptr<Window> window)
 	float lastY = window->GetHeight() / 2.0f;
 	firstMouse = true;
 	float lastFrame = 0.0f;
+	int count = 1;
 	while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
 		float currentTime = static_cast<float>(glfwGetTime());
 		this->deltaTime = currentTime - lastFrame;
@@ -42,15 +43,18 @@ void Scene::Draw(std::unique_ptr<Window> window)
 		getSpritesShader().Use();
 		getSpritesShader().setMat4("projection", projection);
 		getSpritesShader().setMat4("view", view);
+		for (int i = 0; i < lightSources.size(); i++) {
+			lightSources[i]->ApplyParameters(getSpritesShader());
+		}
 		for (int i = 0; i < sprites.size(); i++) {
-			sprites[i]->Draw(getSpritesShader(), deltaTime);
+			sprites[i]->Draw(getSpritesShader(), deltaTime, projection, view);
 		}
 
 		getLightsShader().Use();
 		getLightsShader().setMat4("projection", projection);
 		getLightsShader().setMat4("view", view);
 		for (int i = 0; i < lightSources.size(); i++) {
-			lightSources[i]->Draw(getLightsShader());
+			lightSources[i]->Draw(getLightsShader(), deltaTime, projection, view);
 		}
 
 		glfwSwapBuffers(window->GetGLFWWindow());

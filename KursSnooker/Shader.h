@@ -2,6 +2,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 class Shader
 {
@@ -14,7 +16,7 @@ protected:
 	virtual void CreateShader() = 0;
 	virtual void ThrowErrorMessage(char info[]) = 0;
 	unsigned int shader;
-	const char* shaderSource;
+	std::string shaderCodeStr;
 private:
 	void RegisterShader();
 	void CheckRegisterShaderSuccess();
