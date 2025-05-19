@@ -1,48 +1,49 @@
 #include "RegularSceneBuilder.h"
 
-RegularSceneBuilder::RegularSceneBuilder(SceneConfig cfg) : cfg(cfg)
+RegularSceneBuilder::RegularSceneBuilder(ShaderProgram& spritesShader, ShaderProgram& lightsShader, glm::vec3 skyboxColor)
+	: spritesShader(spritesShader), lightsShader(lightsShader), skyboxColor(skyboxColor)
 {
 	this->Reset();
 }
 
-void RegularSceneBuilder::BuildSprite(SceneSpriteBuilderConfig cfg) const
+void RegularSceneBuilder::BuildSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
+	glm::mat4 rotation) const
 {
-	Sprite sprite = CreateSprite(cfg);
+	std::shared_ptr<Sprite> sprite = CreateSprite(path, pos, scale, rotation);
 	this->scene.get()->AddSprite(sprite);
 }
 
-Sprite RegularSceneBuilder::CreateSprite(SceneSpriteBuilderConfig& cfg) const
+std::shared_ptr<Sprite> RegularSceneBuilder::CreateSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
+	glm::mat4 rotation) const
 {
 	ObjectAssimpParser<> objectAssimpParser;
 
-	std::vector<std::unique_ptr<CollisionBoundingVolume>> vec = std::move(cfg.boundingVolumes);
 	
-	Sprite sprite(SpriteConfig{
-		.pos = cfg.pos,
-		.scale = cfg.scale,
-		.rotation = cfg.rotation,
-		.model = std::make_shared<Model<>>(cfg.path, objectAssimpParser),
-		.g = cfg.g
-		});
-	for (int i = 0; i < vec.size(); i++) {
-		sprite.AddBoundingVolume(std::move(vec[i]));
-	}
+	std::shared_ptr<Sprite> sprite = std::make_shared<Sprite>(pos, scale, rotation, std::make_shared<Model<>>(path, objectAssimpParser));
 
 	return sprite;
 }
 
-void RegularSceneBuilder::BuildLightSource(SceneLightSourceBuilderConfig cfg) const
+void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, glm::vec3 halfSize, ShaderProgram& shaderProgram)
 {
-	LightSource lightSource(LightSourceConfig{
-		.sprite = cfg.sprite,
-		.settings = cfg.settings->clone()
-		});
+	glm::mat4 offset = glm::mat4(1.0f);
+	offset[0] = glm::vec4(axisX, 0.0f);
+	offset[1] = glm::vec4(axisY, 0.0f);
+	offset[2] = glm::vec4(axisZ, 0.0f);
+	offset = glm::translate(offset, relativePos);
+	std::unique_ptr<Box> box = std::make_unique<Box>(shaderProgram, offset, halfSize, this->scene->GetSprites().back());
+	this->scene->AddCollisionBoundingVolume(std::move(box));
+}
+
+void RegularSceneBuilder::BuildLightSource(std::shared_ptr<Sprite> sprite, std::unique_ptr<LightSourceSettings> settings) const
+{
+	LightSource lightSource(sprite, std::move(settings));
 	this->scene.get()->AddLightSource(lightSource);
 }
 
 void RegularSceneBuilder::Reset()
 {
-	this->scene = std::make_unique<Scene>(cfg);
+	this->scene = std::make_unique<Scene>(spritesShader, lightsShader, skyboxColor, 100, 100);
 }
 
 std::unique_ptr<Scene> RegularSceneBuilder::Build()

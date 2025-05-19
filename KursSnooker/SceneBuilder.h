@@ -12,23 +12,11 @@ class SceneBuilder
 {
 public:
 	virtual ~SceneBuilder(){}
-	struct SceneSpriteBuilderConfig {
-		std::string const& path;
-		glm::vec3 pos;
-		glm::vec3 scale;
-		glm::mat4 rotation;
-		float g;
-		std::vector<std::unique_ptr<CollisionBoundingVolume>> boundingVolumes;
-	};
-	virtual void BuildSprite(SceneSpriteBuilderConfig cfg) const = 0;
-	virtual Sprite CreateSprite(SceneSpriteBuilderConfig& cfg) const = 0;
-	struct SceneLightSourceBuilderConfig {
-		Sprite sprite;
-		glm::vec3 ambient;
-		glm::vec3 diffuse;
-		glm::vec3 specular;
-		std::unique_ptr<LightSourceSettings> settings;
-	};
-	virtual void BuildLightSource(SceneLightSourceBuilderConfig cfg) const = 0;
+	virtual void BuildSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
+		glm::mat4 rotation) const = 0;
+	virtual std::shared_ptr<Sprite> CreateSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
+		glm::mat4 rotation) const = 0;
+	virtual void AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, glm::vec3 halfSize, ShaderProgram& shaderProgram) = 0;
+	virtual void BuildLightSource(std::shared_ptr<Sprite> sprite, std::unique_ptr<LightSourceSettings> settings) const = 0;
 };
 

@@ -20,6 +20,5 @@
 #include "SceneBuilder.h"
 #include "RegularSceneBuilder.h"
 #include "ShadersBuilder.h"
-#include "BoundingVolumesBuilder.h"
 #include "CollisionBoundingVolume.h"
 #include "OBB.h"

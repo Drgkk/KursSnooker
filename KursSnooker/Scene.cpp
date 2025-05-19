@@ -2,15 +2,28 @@
 
 
 
-Scene::Scene(SceneConfig cfg)
-	: spritesShader(cfg.spritesShader), lightsShader(cfg.lightsShader), skyboxColor(cfg.skyboxColor), player(glm::vec3(0.0f, 0.0f, 0.3f))
+Scene::Scene(ShaderProgram& spritesShader, ShaderProgram& lightsShader, glm::vec3 skyboxColor,
+	 unsigned int maxContacts, unsigned int iterations)
+	: spritesShader(spritesShader), lightsShader(lightsShader), skyboxColor(skyboxColor), player(glm::vec3(0.0f, 0.0f, 0.3f)),
+     contactResolver(maxContacts), maxContacts(maxContacts)
 {
 	deltaTime = 0.0f;
+	calculateIterations = (iterations == 0);
 }
 
-void Scene::AddSprite(Sprite& sprite)
+void Scene::AddSprite(std::shared_ptr<Sprite> sprite)
 {
-	this->sprites.push_back(std::make_unique<Sprite>(sprite));
+	this->sprites.push_back(sprite);
+}
+
+void Scene::AddCollisionBoundingVolume(std::unique_ptr<CollisionBoundingVolume> collisionBoundingVolume)
+{
+	this->collisionBoundingVolumes.push_back(std::move(collisionBoundingVolume));
+}
+
+std::vector<std::shared_ptr<Sprite>>& Scene::GetSprites()
+{
+	return this->sprites;
 }
 
 void Scene::AddLightSource(LightSource& lightSource)
@@ -33,12 +46,20 @@ void Scene::Draw(std::unique_ptr<Window> window)
 		this->deltaTime = currentTime - lastFrame;
 		lastFrame = currentTime;
 
+		StartFrame();
+		GenerateContacts();
+		//collisionDetector->Resolve(sprites);
+
 		window = processInput(std::move(window));
 
 		glClearColor(skyboxColor.x, skyboxColor.y, skyboxColor.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glm::mat4 projection = glm::perspective(glm::radians(player.Zoom), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 		glm::mat4 view = player.GetViewMatrix();
+
+		for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
+			collisionBoundingVolumes[i]->Draw(projection, view);
+		}
 
 		getSpritesShader().Use();
 		getSpritesShader().setMat4("projection", projection);
@@ -61,6 +82,39 @@ void Scene::Draw(std::unique_ptr<Window> window)
 		glfwPollEvents();
 	}
 	
+}
+
+unsigned int Scene::GenerateContacts()
+{
+	unsigned int limit = maxContacts;
+
+	cData.reset(maxContacts);
+	cData.friction = 0.9f;
+	cData.restitution = 0.1f;
+	cData.tolerance = 0.1f;
+
+	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
+		for (int j = 0; j < collisionBoundingVolumes.size(); j++) {
+			if (i == j || !cData.hasMoreContacts()) return;
+			collisionBoundingVolumes[i]->Intersects(*collisionBoundingVolumes[j].get(), &cData);
+		}
+	}
+}
+
+void Scene::UpdateObjects(float duration)
+{
+	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
+		collisionBoundingVolumes[i]->body->Integrate(duration);
+		collisionBoundingVolumes[i]->CalculateInternals();
+	}
+}
+
+void Scene::StartFrame()
+{
+	for (int i = 0; i < sprites.size(); i++) {
+		sprites[i]->ClearAccumulators();
+		sprites[i]->CalculateDerivedData();
+	}
 }
 
 

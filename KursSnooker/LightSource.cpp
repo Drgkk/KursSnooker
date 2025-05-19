@@ -2,8 +2,8 @@
 
 
 
-LightSource::LightSource(LightSourceConfig cfg)
-	: lightSprite(cfg.sprite), settings(std::move(cfg.settings))
+LightSource::LightSource(std::shared_ptr<Sprite> sprite, std::unique_ptr<LightSourceSettings> settings)
+	: lightSprite(sprite), settings(std::move(settings))
 {
 }
 
@@ -19,10 +19,10 @@ LightSource::LightSource(const LightSource& other)
 void LightSource::Draw(ShaderProgram& shaderProgram, float deltaTime, glm::mat4 proj, glm::mat4 view)
 {
 	ApplyParameters(shaderProgram);
-	lightSprite.Draw(shaderProgram, deltaTime, proj, view);
+	lightSprite->Draw(shaderProgram, deltaTime, proj, view);
 }
 
 void LightSource::ApplyParameters(ShaderProgram& shaderProgram)
 {
-	settings.get()->ApplyParameters(shaderProgram, lightSprite.GetPosition());
+	settings.get()->ApplyParameters(shaderProgram, lightSprite->GetPosition());
 }
