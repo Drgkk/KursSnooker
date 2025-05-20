@@ -76,7 +76,7 @@ int main() {
 	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), collisionVolumesShaderProgram,
 		3.0f, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));*/
 	sceneBuilder->BuildSprite(
-		"resources/objects/snookerballs/1/ball1.obj", glm::vec3(0.0f, 5.5f, 0.0f), glm::vec3(0.04f, 0.04f, 0.04f), glm::mat4(1.0f), lightShaderProgram
+		"resources/objects/snookerballs/1/ball1.obj", glm::vec3(0.0f, 2.5f, 0.0f), glm::vec3(0.04f, 0.04f, 0.04f), glm::mat4(1.0f), lightShaderProgram
 	);
 	sceneBuilder->AddLightSource(
 		std::move(std::make_unique<LightSourceSettingsPoint>(LightSourceSettingsPointConfig{
@@ -88,7 +88,7 @@ int main() {
 			.quadratic = 0.032f,
 			.index = 0,
 	})));
-	sceneBuilder->BuildSprite(
+	/*sceneBuilder->BuildSprite(
 		"resources/objects/snookerballs/1/ball1.obj", glm::vec3(0.0f, 0.33f, 0.0f), glm::vec3(0.04f, 0.04f, 0.04f), glm::mat4(1.0f), lightShaderProgram
 	);
 	sceneBuilder->AddForce(gravity);
@@ -103,7 +103,7 @@ int main() {
 			.linear = 0.09f,
 			.quadratic = 0.032f,
 			.index = 1,
-			})));
+			})));*/
 
 
 	std::unique_ptr<Scene> scene1(sceneBuilder->Build());

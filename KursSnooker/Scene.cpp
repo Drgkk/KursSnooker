@@ -7,6 +7,7 @@ Scene::Scene(glm::vec3 skyboxColor,
 	: skyboxColor(skyboxColor), player(glm::vec3(0.0f, 0.0f, 0.3f)),
      contactResolver(iterations), maxContacts(maxContacts), fr(std::move(fr))
 {
+	this->contactResolver.SetEpsilon(0.01f, 0.0001f);
 	deltaTime = 0.0f;
 	calculateIterations = (iterations == 0);
 }
@@ -232,6 +233,10 @@ void Scene::processInput()
 		player.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS)
 		player.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_R) == GLFW_PRESS)
+		player.ProcessKeyboard(UP, deltaTime);
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_F) == GLFW_PRESS)
+		player.ProcessKeyboard(DOWN, deltaTime);
 	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_P) == GLFW_PRESS)
 		this->isPaused = true;
 	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_G) == GLFW_PRESS)
