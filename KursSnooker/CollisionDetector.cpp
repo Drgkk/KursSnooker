@@ -1,5 +1,13 @@
 #include "CollisionDetector.h"
+#include <iostream>
 
+static inline float transformToAxis(const OBB& box, const glm::vec3& axis)
+{
+    return
+        box.HalfSize.x * fabs(glm::dot(axis, box.GetAxis(0))) +
+        box.HalfSize.y * fabs(glm::dot(axis, box.GetAxis(1))) +
+        box.HalfSize.z * fabs(glm::dot(axis, box.GetAxis(2)));
+}
 
 bool CollisionDetector::OBBandOBB(const OBB& one, const OBB& two, CollisionData* collisionData)
 {
@@ -7,6 +15,7 @@ bool CollisionDetector::OBBandOBB(const OBB& one, const OBB& two, CollisionData*
     int bestCase = std::numeric_limits<int>::max();
     glm::vec3 toCentre;
     toCentre = two.GetAxis(3) - one.GetAxis(3);
+
 
 
     glm::vec3 axes[15];
@@ -104,6 +113,141 @@ bool CollisionDetector::OBBandOBB(const OBB& one, const OBB& two, CollisionData*
 
 }
 
+unsigned int CollisionDetector::OBBAndHalfSpace(const OBB& box, const CollisionPlane& plane, CollisionData* collisionData)
+{
+    if (collisionData->contactsLeft <= 0) return false;
+    if (!IntersectionsTest::BoxAndHalfSpace(box, plane)) {
+        return 0;
+    }
+
+    static float mults[8][3] = { {1,1,1},{-1,1,1},{1,-1,1},{-1,-1,1},
+                               {1,1,-1},{-1,1,-1},{1,-1,-1},{-1,-1,-1} };
+
+    std::vector<Contact>& contacts = collisionData->contacts;
+    unsigned contactsUsed = 0;
+    for (unsigned i = 0; i < 8; i++) {
+
+        glm::vec3 vertexPos(mults[i][0], mults[i][1], mults[i][2]);
+        vertexPos = vertexPos * box.HalfSize;
+        vertexPos = glm::vec3(box.GetTransform() * glm::vec4(vertexPos, 1.0f));
+
+        float vertexDistance = glm::dot(vertexPos, plane.direction);
+        Contact contact;
+        if (vertexDistance <= plane.offset)
+        {
+            contact.contactPoint = plane.direction;
+            contact.contactPoint *= (vertexDistance - plane.offset);
+            contact.contactPoint += vertexPos;
+            contact.contactNormal = plane.direction;
+            contact.penetration = plane.offset - vertexDistance;
+
+            contact.SetBodyData(box.body, NULL,
+                collisionData->friction, collisionData->restitution);
+
+            contacts.push_back(contact);
+            contactsUsed++;
+            if (contactsUsed == (unsigned)collisionData->contactsLeft) return contactsUsed;
+        }
+    }
+
+    collisionData->addContacts(contactsUsed);
+    return contactsUsed;
+}
+
+unsigned int CollisionDetector::SphereAndHalfSpace(const CollisionSphere& sphere, const CollisionPlane& plane, CollisionData* collisionData)
+{
+    if (collisionData->contactsLeft <= 0) return 0;
+    glm::vec3 position = sphere.GetAxis(3);
+    float ballDistance = glm::dot(plane.direction, position) - sphere.radius - plane.offset;
+    if (ballDistance >= 0) return 0;
+
+    Contact contact;
+    contact.contactNormal = plane.direction;
+    contact.penetration = -ballDistance;
+    contact.contactPoint = position - plane.direction * (ballDistance + sphere.radius);
+    contact.SetBodyData(sphere.body, NULL, collisionData->friction, collisionData->restitution);
+    collisionData->contacts.push_back(contact);
+    collisionData->addContacts(1);
+    return 1;
+}
+
+unsigned int CollisionDetector::OBBAndSphere(const OBB& box, const CollisionSphere& sphere, CollisionData* collisionData)
+{
+    glm::vec3 centre = sphere.GetAxis(3);
+    glm::vec3 relCentre = glm::vec3(glm::inverse(box.GetTransform()) * glm::vec4(centre, 1.0f));
+
+    if (fabs(relCentre.x) - sphere.radius > box.HalfSize.x ||
+        fabs(relCentre.y) - sphere.radius > box.HalfSize.y ||
+        fabs(relCentre.z) - sphere.radius > box.HalfSize.z)
+    {
+        return 0;
+    }
+
+    glm::vec3 closestPt(0, 0, 0);
+    float dist;
+
+    dist = relCentre.x;
+    if (dist > box.HalfSize.x) dist = box.HalfSize.x;
+    if (dist < -box.HalfSize.x) dist = -box.HalfSize.x;
+    closestPt.x = dist;
+
+    dist = relCentre.y;
+    if (dist > box.HalfSize.y) dist = box.HalfSize.y;
+    if (dist < -box.HalfSize.y) dist = -box.HalfSize.y;
+    closestPt.y = dist;
+
+    dist = relCentre.z;
+    if (dist > box.HalfSize.z) dist = box.HalfSize.z;
+    if (dist < -box.HalfSize.z) dist = -box.HalfSize.z;
+    closestPt.z = dist;
+
+    glm::vec3 helpVec = (closestPt - relCentre);
+    dist = glm::dot(helpVec, helpVec);
+    if (dist > sphere.radius * sphere.radius) return 0;
+
+    glm::vec3 closestPtWorld = glm::vec3(box.GetTransform() * glm::vec4(closestPt, 1.0f));
+
+    Contact contact;
+    contact.contactNormal = glm::normalize((closestPtWorld - centre));
+    contact.contactPoint = closestPtWorld;
+    contact.penetration = sphere.radius - sqrtf(dist);
+    contact.SetBodyData(box.body, sphere.body,
+        collisionData->friction, collisionData->restitution);
+
+    collisionData->contacts.push_back(contact);
+    collisionData->addContacts(1);
+    return 1;
+}
+
+unsigned int CollisionDetector::SphereAndSphere(const CollisionSphere& one, const CollisionSphere& two, CollisionData* collisionData)
+{
+    if (collisionData->contactsLeft <= 0) return 0;
+
+    glm::vec3 positionOne = one.GetAxis(3);
+    glm::vec3 positionTwo = two.GetAxis(3);
+
+    glm::vec3 midline = positionOne - positionTwo;
+    float size = glm::length(midline);
+
+    if (size <= 0.0f || size >= one.radius + two.radius)
+    {
+        return 0;
+    }
+
+    glm::vec3 normal = midline * ((1.0f) / size);
+
+    Contact contact;
+    contact.contactNormal = normal;
+    contact.contactPoint = positionOne + midline * 0.5f;
+    contact.penetration = (one.radius + two.radius - size);
+    contact.SetBodyData(one.body, two.body,
+        collisionData->friction, collisionData->restitution);
+
+    collisionData->contacts.push_back(contact);
+    collisionData->addContacts(1);
+    return 1;
+}
+
 float CollisionDetector::penetrationOnAxis(const glm::vec3& toCentre, const glm::vec3& axis, const OBB& one, const OBB& two)
 {
     float oneProject = transformToAxis(one, axis);
@@ -176,10 +320,12 @@ glm::vec3 CollisionDetector::getContactPoint(const glm::vec3& pOne, const glm::v
     }
 }
 
-float CollisionDetector::transformToAxis(const OBB& box, const glm::vec3& axis)
+
+
+bool IntersectionsTest::BoxAndHalfSpace(const OBB& box, const CollisionPlane& plane)
 {
-    return
-        box.HalfSize.x * fabs(glm::dot(axis, box.GetAxis(0))) +
-        box.HalfSize.y * fabs(glm::dot(axis, box.GetAxis(1))) +
-        box.HalfSize.z * fabs(glm::dot(axis, box.GetAxis(2)));
+    float projectedRadius = transformToAxis(box, plane.direction);
+    float boxDistance = glm::dot(plane.direction, box.GetAxis(3)) - projectedRadius;
+    return boxDistance <= plane.offset;
+
 }

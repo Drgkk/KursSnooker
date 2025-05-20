@@ -32,6 +32,8 @@ private:
 	std::vector<Contact> contacts;
 	std::vector<std::unique_ptr<CollisionBoundingVolume>> collisionBoundingVolumes;
 
+	void debug(glm::mat4 projection, glm::mat4 view);
+	void update(float duration);
 	CollisionData cData;
 
 	unsigned int maxContacts;

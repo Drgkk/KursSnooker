@@ -41,6 +41,7 @@ void Contact::swapBodies()
 void Contact::matchAwakeState()
 {
 	if (!body[1]) return;
+	if (!body[0]) return;
 
 	bool body0awake = body[0]->GetAwake();
 	bool body1awake = body[1]->GetAwake();
@@ -137,6 +138,7 @@ void Contact::applyVelocityChange(glm::vec3 velocityChange[2], glm::vec3 rotatio
 	else {
 		impulseContact = calculateFrictionImpulse(inverseInertiaTensor);
 	}
+
 
 	glm::vec3 impulse = contactToWorld * impulseContact;
 
@@ -284,11 +286,12 @@ glm::vec3 Contact::calculateFrictionlessImpulse(glm::mat3* inverseInertiaTensor)
 }
 
 inline glm::mat3 skewSymmetric(const glm::vec3& v) {
-	return glm::mat3(
+	//TRANSPOSE HERE TEST
+	return glm::transpose(glm::mat3(
 		0.0f, v.z, -v.y,
 		-v.z, 0.0f, v.x,
 		v.y, -v.x, 0.0f
-	);
+	));
 }
 
 glm::vec3 Contact::calculateFrictionImpulse(glm::mat3* inverseInertiaTensor)

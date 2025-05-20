@@ -47,7 +47,7 @@ void Scene::Draw(std::unique_ptr<Window> window)
 		lastFrame = currentTime;
 
 		StartFrame();
-		GenerateContacts();
+		update(deltaTime);
 		//collisionDetector->Resolve(sprites);
 
 		window = processInput(std::move(window));
@@ -57,9 +57,7 @@ void Scene::Draw(std::unique_ptr<Window> window)
 		glm::mat4 projection = glm::perspective(glm::radians(player.Zoom), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 		glm::mat4 view = player.GetViewMatrix();
 
-		for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
-			collisionBoundingVolumes[i]->Draw(projection, view);
-		}
+		debug(projection, view);
 
 		getSpritesShader().Use();
 		getSpritesShader().setMat4("projection", projection);
@@ -88,17 +86,27 @@ unsigned int Scene::GenerateContacts()
 {
 	unsigned int limit = maxContacts;
 
+	CollisionPlane plane;
+	plane.direction = glm::vec3(0.0f, 1.0f, 0.0f);
+	plane.offset = -1.7f;
+
 	cData.reset(maxContacts);
 	cData.friction = 0.9f;
 	cData.restitution = 0.1f;
 	cData.tolerance = 0.1f;
 
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
-		for (int j = 0; j < collisionBoundingVolumes.size(); j++) {
-			if (i == j || !cData.hasMoreContacts()) return;
+		if (!cData.hasMoreContacts()) return 0;
+		collisionBoundingVolumes[i]->IntersectsHalfSpace(plane, &cData);
+	}
+
+	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
+		for (int j = i + 1; j < collisionBoundingVolumes.size(); j++) {
+			if (!cData.hasMoreContacts()) return 0;
 			collisionBoundingVolumes[i]->Intersects(*collisionBoundingVolumes[j].get(), &cData);
 		}
 	}
+	return 1;
 }
 
 void Scene::UpdateObjects(float duration)
@@ -117,6 +125,24 @@ void Scene::StartFrame()
 	}
 }
 
+
+void Scene::debug(glm::mat4 projection, glm::mat4 view)
+{
+	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
+		collisionBoundingVolumes[i]->Draw(projection, view);
+	}
+}
+
+void Scene::update(float duration)
+{
+	UpdateObjects(duration);
+	GenerateContacts();
+	contactResolver.ResolveContacts(
+		cData.contacts,
+		cData.contactCount,
+		duration
+	);
+}
 
 ShaderProgram& Scene::getSpritesShader()
 {

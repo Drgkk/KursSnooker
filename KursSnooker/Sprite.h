@@ -6,13 +6,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include "Models.h"
+#include "RigidBody.h"
 
 
 class Sprite : public RigidBody
 {
 public:
-	Sprite(glm::vec3 pos, glm::vec3 scale,
-		glm::mat4 rotation, std::shared_ptr<Model<>> model);
+	Sprite(glm::vec3 scale, std::shared_ptr<Model<>> model);
 	//Sprite(const Sprite& other);
 	void Draw(ShaderProgram &shaderProgram, float deltaTime, glm::mat4 proj, glm::mat4 view);
 	//void AddBoundingVolume(std::unique_ptr<CollisionBoundingVolume> cbv);

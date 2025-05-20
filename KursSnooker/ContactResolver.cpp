@@ -1,4 +1,5 @@
 #include "ContactResolver.h"
+#include <iostream>
 
 bool ContactResolver::IsValid()
 {
@@ -29,6 +30,7 @@ void ContactResolver::ResolveContacts(std::vector<Contact>& contactArray, unsign
 {
     if (numContacts == 0) return;
     if (!IsValid()) return;
+
 
     prepareContacts(contactArray, numContacts, duration);
 

@@ -6,14 +6,14 @@
 #include "Vertices.h"
 #include "Indices.h"
 
-class Box : public OBB
+class Sphere : public CollisionSphere
 {
 public:
-	Box(ShaderProgram& shaderProgram, glm::mat4 offset, glm::vec3 halfSize, std::shared_ptr<RigidBody> body);
+	Sphere(ShaderProgram& shaderProgram, glm::mat4 offset, float radius, std::shared_ptr<RigidBody> body);
 	virtual void Draw(glm::mat4 proj, glm::mat4 view);
 private:
 	Vertices vertices;
-	Indices indices; 
+	Indices indices;
 	ShaderProgram& shaderProgram;
 	void setUpDraw();
 	void setUpVertices();

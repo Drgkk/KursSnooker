@@ -5,7 +5,9 @@
 #include <filesystem>
 #include "SnookerImport.h"
 #include "stb_image.h"
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 
@@ -50,30 +52,38 @@ int main() {
 	std::unique_ptr<RegularSceneBuilder> sceneBuilder = std::make_unique<RegularSceneBuilder>(
 		objectShaderProgram, lightShaderProgram, glm::vec3(0.05f, 0.05f, 0.05f)
 		);
-	sceneBuilder->BuildSprite(
-		"resources/objects/snookertable/snookertable.obj", glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f))
+	/*sceneBuilder->BuildSprite(
+		"resources/objects/snookertable/snookertable.obj", glm::vec3(0.0f, 0.2f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f))
 		);
-	sceneBuilder->AddBox(glm::vec3(0.0f, -0.11f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.3f, 1.5f), collisionVolumesShaderProgram);
+	sceneBuilder->AddBox(glm::vec3(0.0f, -0.11f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.3f, 1.5f), collisionVolumesShaderProgram,
+		1.0f);*/
 	sceneBuilder->BuildSprite(
 		"resources/objects/Floor/floor.obj", glm::vec3(0.0f, -1.8f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::mat4(1.0f)
 		);
-
 	//0.12f
 	sceneBuilder->BuildSprite(
-		"resources/objects/snookerballs/5/ball5.obj", glm::vec3(0.0f, 1.1f, 0.0f), glm::vec3(0.04f, 0.04f, 0.04f), glm::mat4(1.0f)
+		"resources/objects/snookerballs/5/ball5.obj", glm::vec3(0.0f, 15.1f, 0.0f), glm::vec3(0.04f, 0.04f, 0.04f), glm::mat4(1.0f)
 		);
 
-	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.04f, 0.04f, 0.04f), collisionVolumesShaderProgram);
+	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.04f, collisionVolumesShaderProgram,
+		1.0f);
+	sceneBuilder->BuildSprite(
+		"resources/objects/crate/crate.obj", glm::vec3(0.0f, 12.1f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f)))
+	);
+
+	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), collisionVolumesShaderProgram,
+		1.0f/15.0f);
 	std::shared_ptr<Sprite> sprite = sceneBuilder->CreateSprite(
 		"resources/objects/snookerballs/1/ball1.obj", glm::vec3(0.0f, 1.5f, 0.0f), glm::vec3(0.04f, 0.04f, 0.04f), glm::mat4(1.0f)
 	);
+	sprite->CalculateDerivedData();
 	sceneBuilder->BuildLightSource(sprite,
 		std::move(std::make_unique<LightSourceSettingsPoint>(LightSourceSettingsPointConfig{
 			.ambient = glm::vec3(0.05f, 0.05f, 0.05f),
 			.diffuse = glm::vec3(0.9f, 0.9f, 0.9f),
 			.specular = glm::vec3(1.0f, 1.0f, 1.0f),
 			.constant = 1.0f,
-			.linear = 0.09f,
+			.linear = 0.39f,
 			.quadratic = 0.032f,
 			.index = 0,
 	})));

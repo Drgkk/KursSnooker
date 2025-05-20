@@ -175,6 +175,7 @@
     <ClCompile Include="ShadersBuilder.cpp" />
     <ClCompile Include="ShaderVertex.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Textures.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="ShadersBuilder.h" />
     <ClInclude Include="ShaderVertex.h" />
     <ClInclude Include="SnookerImport.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Textures.h" />
     <ClInclude Include="Vertices.h" />

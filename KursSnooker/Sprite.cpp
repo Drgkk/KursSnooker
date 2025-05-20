@@ -2,14 +2,10 @@
 
 const float TERMINAL_VELOCITY = 3.0f;
 
-Sprite::Sprite(glm::vec3 pos, glm::vec3 scale,
-	glm::mat4 rotation, std::shared_ptr<Model<>> model)
+Sprite::Sprite(glm::vec3 scale, std::shared_ptr<Model<>> model)
 	: scale(scale), model(model)
 {
-	position = pos;
-	orientation = glm::quat_cast(rotation);
-	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	this->CalculateDerivedData();
+
 }
 
 //Sprite::Sprite(const Sprite& other)
