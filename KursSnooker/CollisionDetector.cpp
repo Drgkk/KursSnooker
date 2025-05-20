@@ -329,3 +329,28 @@ bool IntersectionsTest::BoxAndHalfSpace(const OBB& box, const CollisionPlane& pl
     return boxDistance <= plane.offset;
 
 }
+
+bool CollisionDetector::RayAndSphereWorld(glm::vec3 nearPt, glm::vec3 farPt, const CollisionSphere& sphere, glm::vec3& worldPoint)
+{
+    double a = pow((farPt.x - nearPt.x), 2) + pow((farPt.y - nearPt.y), 2) + pow((farPt.z - nearPt.z), 2);
+    double b = 2 * ((farPt.x - nearPt.x) * (nearPt.x - sphere.offset[3][0])
+        + (farPt.y - nearPt.y)*(nearPt.y - sphere.offset[3][1])
+        + (farPt.z - nearPt.z)*(nearPt.z - sphere.offset[3][2]));
+    double c = pow(nearPt.x - sphere.offset[3][0], 2) + pow(nearPt.y - sphere.offset[3][1], 2) + pow(nearPt.z - sphere.offset[3][2], 2) - pow(sphere.radius, 2);
+    double delta = pow(b, 2) - 4 * a * c;
+    double d;
+    glm::vec3 ray = farPt - nearPt;
+
+    if (delta < 0) {
+        return false;
+    }
+    else if (delta == 0) {
+        d = -b / (2 * a);
+    }
+    else {
+        d = (-b - sqrt(delta)) / (2 * a);
+    }
+    glm::vec3 p = glm::vec3(nearPt.x + d * ray.x, nearPt.y + d * ray.y, nearPt.z + d * ray.z);
+    worldPoint =  p;
+    return true;
+}

@@ -13,6 +13,7 @@ public:
 	virtual bool IntersectsOBB(const class OBB& other, CollisionData* collisionData) const = 0;
 	virtual bool IntersectsHalfSpace(const class CollisionPlane& plane, CollisionData* collisionData) const = 0;
 	virtual bool IntersectsSphere(const class CollisionSphere& other, CollisionData* collisionData) const = 0;
+	virtual bool IntersectsRay(const glm::vec3 nearPt, const glm::vec3 farPt, glm::vec3& worldPoint) const = 0;
 	virtual void Draw(glm::mat4 proj, glm::mat4 view) = 0;
 	void CalculateInternals();
 	const glm::mat4& GetTransform() const;
@@ -31,6 +32,7 @@ public:
 	bool IntersectsOBB(const class OBB& other, CollisionData* collisionData) const override;
 	bool IntersectsHalfSpace(const CollisionPlane& plane, CollisionData* collisionData) const override;
 	bool IntersectsSphere(const class CollisionSphere& other, CollisionData* collisionData) const override;
+	bool IntersectsRay(const glm::vec3 nearPt, const glm::vec3 farPt, glm::vec3& worldPoint) const override;
 	virtual void Draw(glm::mat4 proj, glm::mat4 view) = 0;
 	//std::unique_ptr<CollisionBoundingVolume> clone() const override;
 	glm::vec3 HalfSize;
@@ -45,6 +47,7 @@ public:
 	bool IntersectsOBB(const class OBB& other, CollisionData* collisionData) const override;
 	bool IntersectsHalfSpace(const CollisionPlane& plane, CollisionData* collisionData) const override;
 	bool IntersectsSphere(const class CollisionSphere& other, CollisionData* collisionData) const override;
+	bool IntersectsRay(const glm::vec3 nearPt, const glm::vec3 farPt, glm::vec3& worldPoint) const override;
 	virtual void Draw(glm::mat4 proj, glm::mat4 view) = 0;
 	float radius;
 

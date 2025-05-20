@@ -57,6 +57,11 @@ bool OBB::IntersectsSphere(const CollisionSphere& other, CollisionData* collisio
 	return CollisionDetector::OBBAndSphere(*this, other, collisionData);
 }
 
+bool OBB::IntersectsRay(const glm::vec3 nearPt, const glm::vec3 farPt, glm::vec3& worldPoint) const
+{
+	return false;
+}
+
 
 bool CollisionSphere::Intersects(const CollisionBoundingVolume& other, CollisionData* collisionData) const
 {
@@ -76,4 +81,9 @@ bool CollisionSphere::IntersectsHalfSpace(const CollisionPlane& plane, Collision
 bool CollisionSphere::IntersectsSphere(const CollisionSphere& other, CollisionData* collisionData) const
 {
 	return CollisionDetector::SphereAndSphere(other, *this, collisionData);
+}
+
+bool CollisionSphere::IntersectsRay(const glm::vec3 nearPt, const glm::vec3 farPt, glm::vec3& worldPoint) const
+{
+	return CollisionDetector::RayAndSphereWorld(nearPt, farPt, *this, worldPoint);
 }

@@ -26,6 +26,11 @@ inline glm::mat3 setBlockInertiaTensor(const glm::vec3& halfSizes, float mass) {
 	return setInertiaTensorCoeffs(ix, iy, iz);
 }
 
+inline glm::mat3 setSphereInertiaTensor(float radius, float mass) {
+	float I = 0.4f * mass * radius * radius;
+	return setInertiaTensorCoeffs(I, I, I);
+}
+
 
 RegularSceneBuilder::RegularSceneBuilder(glm::vec3 skyboxColor,
 	unsigned int maxContacts, unsigned int iterations, std::unique_ptr<ForceRegistry> fr)
@@ -95,8 +100,7 @@ void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm:
 	sphere->body->SetAngularDamping(angularDamping);
 	sphere->body->SetVelocity(velocity);
 	sphere->body->SetRotation(angularVelocity);
-	glm::vec3 halfSize = glm::vec3(radius, radius, radius);
-	glm::mat3 it = setBlockInertiaTensor(halfSize, sphere->body->GetMass());
+	glm::mat3 it = setSphereInertiaTensor(radius, mass);
 	sphere->body->SetInertiaTensor(it);
 	sphere->body->CalculateDerivedData();
 	sphere->CalculateInternals();

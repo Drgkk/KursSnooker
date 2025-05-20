@@ -8,5 +8,6 @@ void Gravity::UpdateForce(RigidBody* body, float duration)
 {
 	if (!body->HasFiniteMass()) return;
 
-	body->AddForce(gravity * body->GetMass());
+	if(body->GetAwake())
+		body->AddForce(gravity * body->GetMass());
 }

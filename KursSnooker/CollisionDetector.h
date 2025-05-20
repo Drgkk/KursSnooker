@@ -45,6 +45,7 @@ public:
 	static unsigned int SphereAndHalfSpace(const CollisionSphere& sphere, const CollisionPlane& plane, CollisionData* collisionData);
 	static unsigned int OBBAndSphere(const OBB& box, const CollisionSphere& sphere, CollisionData* collisionData);
 	static unsigned int SphereAndSphere(const CollisionSphere& one, const CollisionSphere& two, CollisionData* collisionData);
+	static bool RayAndSphereWorld(glm::vec3 nearPt, glm::vec3 farPt, const CollisionSphere& sphere, glm::vec3& worldPoint);
 private:
 	static void fillPointFaceOBBOBB(const OBB& one, const OBB& two, const glm::vec3 toCentre, CollisionData* data, int best, float pen);
 	static glm::vec3 getContactPoint(const glm::vec3& pOne, const glm::vec3& dOne, float oneSize,

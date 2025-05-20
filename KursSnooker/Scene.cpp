@@ -7,7 +7,7 @@ Scene::Scene(glm::vec3 skyboxColor,
 	: skyboxColor(skyboxColor), player(glm::vec3(0.0f, 0.0f, 0.3f)),
      contactResolver(iterations), maxContacts(maxContacts), fr(std::move(fr))
 {
-	this->contactResolver.SetEpsilon(0.01f, 0.0001f);
+	this->contactResolver.SetEpsilon(0.01f, 0.0005f);
 	deltaTime = 0.0f;
 	calculateIterations = (iterations == 0);
 }
@@ -95,7 +95,7 @@ unsigned int Scene::GenerateContacts()
 
 	CollisionPlane plane;
 	plane.direction = glm::vec3(0.0f, 1.0f, 0.0f);
-	plane.offset = 0.284f;
+	plane.offset = 0.279f;
 
 	CollisionPlane wall1;
 	wall1.direction = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -111,8 +111,8 @@ unsigned int Scene::GenerateContacts()
 	wall4.offset = -1.242f;
 
 	cData.reset(maxContacts);
-	cData.friction = 0.4f;
-	cData.restitution = 0.15f;
+	cData.friction = 0.3f;
+	cData.restitution = 0.2f;
 	cData.tolerance = 0.1f;
 
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
@@ -174,6 +174,60 @@ void Scene::update(float duration)
 }
 
 
+void Scene::rayIntersect()
+{
+	glm::mat4 proj = glm::perspective(glm::radians(player.Zoom), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
+	glm::mat4 view = player.GetViewMatrix();
+
+	glm::vec3 nearPt = glm::unProject(
+		glm::vec3(lastX, lastY, 0.0f),
+		view, proj, glm::vec4(0.0f, 0.0f, (float)window->GetWidth(), (float)window->GetHeight())
+	);
+	glm::vec3 farPt = glm::unProject(
+		glm::vec3(lastX, lastY, 1.0f),
+		view, proj, glm::vec4(0.0f, 0.0f, (float)window->GetWidth(), (float)window->GetHeight())
+	);
+
+	glm::vec3 ray = glm::normalize(farPt - nearPt);
+
+	/*Vertices rayVertices;
+	rayVertices.AddVertice(VertexData{.Position = nearPt});
+	rayVertices.AddVertice(VertexData{.Position = farPt});
+	rayVertices.SetupBuffer();
+	sprites[0]->GetShaderProgram().Use();
+	sprites[0]->GetShaderProgram().setMat4("projection", proj);
+	sprites[0]->GetShaderProgram().setMat4("view", view);
+	sprites[0]->GetShaderProgram().setMat4("model", glm::mat4(1.0f));
+	glDrawArrays(GL_LINES, 0, 2);*/
+
+	unsigned int bestIndex;
+	glm::vec3 closestPoint(std::numeric_limits<float>::max());
+	glm::vec3 worldPoint(std::numeric_limits<float>::max());
+
+	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
+		collisionBoundingVolumes[i]->IntersectsRay(nearPt, farPt, worldPoint);
+		if (worldPoint.x != std::numeric_limits<float>::max()) {
+			if (closestPoint.x == std::numeric_limits<float>::max()) {
+				closestPoint = worldPoint;
+				bestIndex = i;
+			}
+			else {
+				if (glm::length(worldPoint - nearPt) < glm::length(closestPoint - nearPt)) {
+					closestPoint = worldPoint;
+					bestIndex = i;
+				}
+			}
+		}
+	}
+
+	float forceMult = 1.0f;
+
+	if (closestPoint.x != std::numeric_limits<float>::max()) {
+		collisionBoundingVolumes[bestIndex]->body->AddForceAtPoint(forceMult * ray, closestPoint);
+	}
+
+}
+
 void Scene::OnMouseMove(double xposIn, double yposIn)
 {
 	float xpos = static_cast<float>(xposIn);
@@ -191,6 +245,7 @@ void Scene::OnMouseMove(double xposIn, double yposIn)
 
 	lastX = xpos;
 	lastY = ypos;
+
 
 	player.ProcessMouseMovement(xoffset, yoffset);
 }
@@ -255,6 +310,9 @@ void Scene::processInput()
 		glfwSetInputMode(window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 	
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_T) == GLFW_PRESS) {
+		this->rayIntersect();
+	}
 
 }
 

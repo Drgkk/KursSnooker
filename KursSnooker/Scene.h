@@ -52,6 +52,7 @@ private:
 	bool firstMouse;
 	float deltaTime;
 
+	void rayIntersect();
 	void OnMouseMove(double xposIn, double yposIn);
 	void OnWindowResize(int width, int height);
 	static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
