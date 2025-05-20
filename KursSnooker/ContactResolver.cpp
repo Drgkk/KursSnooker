@@ -57,8 +57,8 @@ void ContactResolver::adjustVelocities(std::vector<Contact>& contactArray, unsig
     while (velocityIterationsUsed < velocityIterations)
     {
         float max = velocityEpsilon;
-        unsigned index = numContacts;
-        for (unsigned i = 0; i < numContacts; i++)
+        unsigned int index = numContacts;
+        for (unsigned int i = 0; i < numContacts; i++)
         {
             if (contactArray[i].desiredDeltaVelocity > max)
             {
@@ -72,11 +72,11 @@ void ContactResolver::adjustVelocities(std::vector<Contact>& contactArray, unsig
 
         contactArray[index].applyVelocityChange(velocityChange, rotationChange);
 
-        for (unsigned i = 0; i < numContacts; i++)
+        for (unsigned int i = 0; i < numContacts; i++)
         {
-            for (unsigned b = 0; b < 2; b++) if (contactArray[i].body[b])
+            for (unsigned int b = 0; b < 2; b++) if (contactArray[i].body[b])
             {
-                for (unsigned d = 0; d < 2; d++)
+                for (unsigned int d = 0; d < 2; d++)
                 {
                     if (contactArray[i].body[b] == contactArray[index].body[d])
                     {
@@ -124,9 +124,9 @@ void ContactResolver::adjustPositions(std::vector<Contact>& contactArray, unsign
 
         for (i = 0; i < numContacts; i++)
         {
-            for (unsigned b = 0; b < 2; b++) if (contactArray[i].body[b])
+            for (unsigned int b = 0; b < 2; b++) if (contactArray[i].body[b])
             {
-                for (unsigned d = 0; d < 2; d++)
+                for (unsigned int d = 0; d < 2; d++)
                 {
                     if (contactArray[i].body[b] == contactArray[index].body[d])
                     {

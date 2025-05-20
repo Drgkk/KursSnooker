@@ -7,7 +7,7 @@
 class GameEventWindowResized : public GameEvent
 {
 public:
-	GameEventWindowResized(Window* window);
+	GameEventWindowResized(GLFWwindow* window, int width, int height);
 	void Register() override;
 
 private:

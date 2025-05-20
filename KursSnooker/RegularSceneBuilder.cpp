@@ -27,26 +27,27 @@ inline glm::mat3 setBlockInertiaTensor(const glm::vec3& halfSizes, float mass) {
 }
 
 
-RegularSceneBuilder::RegularSceneBuilder(ShaderProgram& spritesShader, ShaderProgram& lightsShader, glm::vec3 skyboxColor)
-	: spritesShader(spritesShader), lightsShader(lightsShader), skyboxColor(skyboxColor)
+RegularSceneBuilder::RegularSceneBuilder(glm::vec3 skyboxColor,
+	unsigned int maxContacts, unsigned int iterations, std::unique_ptr<ForceRegistry> fr)
+	: spritesShader(spritesShader), lightsShader(lightsShader), skyboxColor(skyboxColor), maxContacts(maxContacts), iterations(iterations), fr(std::move(fr))
 {
 	this->Reset();
 }
 
 void RegularSceneBuilder::BuildSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
-	glm::mat4 rotation) const
+	glm::mat4 rotation, ShaderProgram& shaderProgram) const
 {
-	std::shared_ptr<Sprite> sprite = CreateSprite(path, pos, scale, rotation);
+	std::shared_ptr<Sprite> sprite = createSprite(path, pos, scale, rotation, shaderProgram);
 	this->scene.get()->AddSprite(sprite);
 }
 
-std::shared_ptr<Sprite> RegularSceneBuilder::CreateSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
-	glm::mat4 rotation) const
+std::shared_ptr<Sprite> RegularSceneBuilder::createSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
+	glm::mat4 rotation, ShaderProgram& shaderProgram) const
 {
 	ObjectAssimpParser<> objectAssimpParser;
 
 	
-	std::shared_ptr<Sprite> sprite = std::make_shared<Sprite>(scale, std::make_shared<Model<>>(path, objectAssimpParser));
+	std::shared_ptr<Sprite> sprite = std::make_shared<Sprite>(scale, std::make_shared<Model<>>(path, objectAssimpParser), shaderProgram);
 
 	sprite->SetPosition(pos);
 	sprite->SetOrientation(glm::quat_cast(rotation));
@@ -55,7 +56,7 @@ std::shared_ptr<Sprite> RegularSceneBuilder::CreateSprite(std::string const& pat
 }
 
 void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, glm::vec3 halfSize, ShaderProgram& shaderProgram,
-	float inverseMass, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
+	float mass, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
 {
 	glm::mat4 offset = glm::mat4(1.0f);
 	offset[0] = glm::vec4(axisX, 0.0f);
@@ -63,7 +64,7 @@ void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::ve
 	offset[2] = glm::vec4(axisZ, 0.0f);
 	offset = glm::translate(offset, relativePos);
 	std::unique_ptr<Box> box = std::make_unique<Box>(shaderProgram, offset, halfSize, this->scene->GetSprites().back());
-	box->body->SetInverseMass(inverseMass);
+	box->body->SetMass(mass);
 	box->body->SetLinearDamping(linearDamping);
 	box->body->SetAngularDamping(angularDamping);
 	box->body->SetVelocity(velocity);
@@ -73,17 +74,15 @@ void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::ve
 	box->body->CalculateDerivedData();
 	box->CalculateInternals();
 
-	if(inverseMass > 0.00001f)
-		box->body->SetAcceleration(glm::vec3(0.0f, -1.5f, 0.0f));
-	else
-		box->body->SetAcceleration(glm::vec3(0.0f, 0.0f, 0.0f));
+	box->body->SetAcceleration(glm::vec3(0.0f, 0.0f, 0.0f));
+		
 	box->body->SetAwake(true);
 	box->body->SetCanSleep(true);
 
 	this->scene->AddCollisionBoundingVolume(std::move(box));
 }
 
-void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, float radius, ShaderProgram& shaderProgram, float inverseMass, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
+void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, float radius, ShaderProgram& shaderProgram, float mass, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
 {
 	glm::mat4 offset = glm::mat4(1.0f);
 	offset[0] = glm::vec4(axisX, 0.0f);
@@ -91,7 +90,7 @@ void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm:
 	offset[2] = glm::vec4(axisZ, 0.0f);
 	offset = glm::translate(offset, relativePos);
 	std::unique_ptr<Sphere> sphere = std::make_unique<Sphere>(shaderProgram, offset, radius, this->scene->GetSprites().back());
-	sphere->body->SetInverseMass(inverseMass);
+	sphere->body->SetMass(mass);
 	sphere->body->SetLinearDamping(linearDamping);
 	sphere->body->SetAngularDamping(angularDamping);
 	sphere->body->SetVelocity(velocity);
@@ -102,25 +101,27 @@ void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm:
 	sphere->body->CalculateDerivedData();
 	sphere->CalculateInternals();
 
-	if (inverseMass > 0.00001f)
-		sphere->body->SetAcceleration(glm::vec3(0.0f, -1.5f, 0.0f));
-	else
-		sphere->body->SetAcceleration(glm::vec3(0.0f, 0.0f, 0.0f));
+	sphere->body->SetAcceleration(glm::vec3(0.0f, 0.0f, 0.0f));
 	sphere->body->SetAwake(true);
 	sphere->body->SetCanSleep(true);
 
 	this->scene->AddCollisionBoundingVolume(std::move(sphere));
 }
 
-void RegularSceneBuilder::BuildLightSource(std::shared_ptr<Sprite> sprite, std::unique_ptr<LightSourceSettings> settings) const
+void RegularSceneBuilder::AddForce(std::shared_ptr<ForceGenerator> fg)
 {
-	LightSource lightSource(sprite, std::move(settings));
+	this->scene->GetForceRegistry()->Add(this->scene->GetSprites().back().get(), fg.get());
+}
+
+void RegularSceneBuilder::AddLightSource(std::unique_ptr<LightSourceSettings> settings) const
+{
+	LightSource lightSource(this->scene->GetSprites().back(), std::move(settings));
 	this->scene.get()->AddLightSource(lightSource);
 }
 
 void RegularSceneBuilder::Reset()
 {
-	this->scene = std::make_unique<Scene>(spritesShader, lightsShader, skyboxColor, 700, 200);
+	this->scene = std::make_unique<Scene>(skyboxColor, maxContacts, iterations, std::move(fr));
 }
 
 std::unique_ptr<Scene> RegularSceneBuilder::Build()

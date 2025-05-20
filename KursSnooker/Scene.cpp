@@ -2,10 +2,10 @@
 
 
 
-Scene::Scene(ShaderProgram& spritesShader, ShaderProgram& lightsShader, glm::vec3 skyboxColor,
-	 unsigned int maxContacts, unsigned int iterations)
-	: spritesShader(spritesShader), lightsShader(lightsShader), skyboxColor(skyboxColor), player(glm::vec3(0.0f, 0.0f, 0.3f)),
-     contactResolver(maxContacts), maxContacts(maxContacts)
+Scene::Scene(glm::vec3 skyboxColor,
+	 unsigned int maxContacts, unsigned int iterations, std::unique_ptr<ForceRegistry> fr)
+	: skyboxColor(skyboxColor), player(glm::vec3(0.0f, 0.0f, 0.3f)),
+     contactResolver(iterations), maxContacts(maxContacts), fr(std::move(fr))
 {
 	deltaTime = 0.0f;
 	calculateIterations = (iterations == 0);
@@ -32,10 +32,12 @@ void Scene::AddLightSource(LightSource& lightSource)
 }
 
 
-void Scene::Draw(std::unique_ptr<Window> window)
+void Scene::Draw(Window* window)
 {
+	this->window = window;
 	glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
 	glfwSetCursorPosCallback(window->GetGLFWWindow(), &Scene::mouse_callback);
+	glfwSetFramebufferSizeCallback(window->GetGLFWWindow(), &Scene::window_resize);
 	float lastX = window->GetWidth() / 2.0f;
 	float lastY = window->GetHeight() / 2.0f;
 	firstMouse = true;
@@ -47,10 +49,14 @@ void Scene::Draw(std::unique_ptr<Window> window)
 		lastFrame = currentTime;
 
 		StartFrame();
-		update(deltaTime);
-		//collisionDetector->Resolve(sprites);
+		if (!isPaused || (nextFrame && !isNextFrameAlready)) {
+			update(deltaTime);
+			nextFrame = false;
+			isNextFrameAlready = true;
+		}
+			
 
-		window = processInput(std::move(window));
+		processInput();
 
 		glClearColor(skyboxColor.x, skyboxColor.y, skyboxColor.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -59,21 +65,16 @@ void Scene::Draw(std::unique_ptr<Window> window)
 
 		debug(projection, view);
 
-		getSpritesShader().Use();
-		getSpritesShader().setMat4("projection", projection);
-		getSpritesShader().setMat4("view", view);
-		for (int i = 0; i < lightSources.size(); i++) {
-			lightSources[i]->ApplyParameters(getSpritesShader());
-		}
+		
 		for (int i = 0; i < sprites.size(); i++) {
-			sprites[i]->Draw(getSpritesShader(), deltaTime, projection, view);
+			for (int j = 0; j < lightSources.size(); j++) {
+				lightSources[j]->ApplyParameters(sprites[i]->GetShaderProgram());
+			}
+			sprites[i]->Draw(deltaTime, projection, view);
 		}
 
-		getLightsShader().Use();
-		getLightsShader().setMat4("projection", projection);
-		getLightsShader().setMat4("view", view);
 		for (int i = 0; i < lightSources.size(); i++) {
-			lightSources[i]->Draw(getLightsShader(), deltaTime, projection, view);
+			lightSources[i]->Draw(deltaTime, projection, view);
 		}
 
 		glfwSwapBuffers(window->GetGLFWWindow());
@@ -82,22 +83,48 @@ void Scene::Draw(std::unique_ptr<Window> window)
 	
 }
 
+ForceRegistry* Scene::GetForceRegistry()
+{
+	return this->fr.get();
+}
+
 unsigned int Scene::GenerateContacts()
 {
 	unsigned int limit = maxContacts;
 
 	CollisionPlane plane;
 	plane.direction = glm::vec3(0.0f, 1.0f, 0.0f);
-	plane.offset = -1.7f;
+	plane.offset = 0.284f;
+
+	CollisionPlane wall1;
+	wall1.direction = glm::vec3(1.0f, 0.0f, 0.0f);
+	wall1.offset = -0.7f;
+	CollisionPlane wall2;
+	wall2.direction = glm::vec3(-1.0f, 0.0f, 0.0f);
+	wall2.offset = -0.7f;
+	CollisionPlane wall3;
+	wall3.direction = glm::vec3(0.0f, 0.0f, 1.0f);
+	wall3.offset = -1.242f;
+	CollisionPlane wall4;
+	wall4.direction = glm::vec3(0.0f, 0.0f, -1.0f);
+	wall4.offset = -1.242f;
 
 	cData.reset(maxContacts);
-	cData.friction = 0.9f;
-	cData.restitution = 0.1f;
+	cData.friction = 0.4f;
+	cData.restitution = 0.15f;
 	cData.tolerance = 0.1f;
 
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
 		if (!cData.hasMoreContacts()) return 0;
 		collisionBoundingVolumes[i]->IntersectsHalfSpace(plane, &cData);
+		if (!cData.hasMoreContacts()) return 0;
+		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall1, &cData);
+		if (!cData.hasMoreContacts()) return 0;
+		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall2, &cData);
+		if (!cData.hasMoreContacts()) return 0;
+		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall3, &cData);
+		if (!cData.hasMoreContacts()) return 0;
+		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall4, &cData);
 	}
 
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
@@ -135,6 +162,7 @@ void Scene::debug(glm::mat4 projection, glm::mat4 view)
 
 void Scene::update(float duration)
 {
+	fr->UpdateForces(duration);
 	UpdateObjects(duration);
 	GenerateContacts();
 	contactResolver.ResolveContacts(
@@ -144,15 +172,6 @@ void Scene::update(float duration)
 	);
 }
 
-ShaderProgram& Scene::getSpritesShader()
-{
-	return spritesShader;
-}
-
-ShaderProgram& Scene::getLightsShader()
-{
-	return lightsShader;
-}
 
 void Scene::OnMouseMove(double xposIn, double yposIn)
 {
@@ -175,6 +194,12 @@ void Scene::OnMouseMove(double xposIn, double yposIn)
 	player.ProcessMouseMovement(xoffset, yoffset);
 }
 
+void Scene::OnWindowResize(int width, int height)
+{
+	this->window->SetWidth(width);
+	this->window->SetHeight(height);
+}
+
 void Scene::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
 	Scene* scene = static_cast<Scene*>(
@@ -184,7 +209,17 @@ void Scene::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 		scene->OnMouseMove(xposIn, yposIn);
 }
 
-std::unique_ptr<Window> Scene::processInput(std::unique_ptr<Window> window)
+void Scene::window_resize(GLFWwindow* window, int width, int height)
+{
+	Scene* scene = static_cast<Scene*>(
+		glfwGetWindowUserPointer(window)
+		);
+	glViewport(0, 0, width, height);
+	if (scene)
+		scene->OnWindowResize(width, height);
+}
+
+void Scene::processInput()
 {
 	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window->GetGLFWWindow(), true);
@@ -197,7 +232,24 @@ std::unique_ptr<Window> Scene::processInput(std::unique_ptr<Window> window)
 		player.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_D) == GLFW_PRESS)
 		player.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_P) == GLFW_PRESS)
+		this->isPaused = true;
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_G) == GLFW_PRESS)
+		this->isPaused = false;
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_J) == GLFW_PRESS) {
+		this->nextFrame = true;
+	}
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_J) == GLFW_RELEASE) {
+		this->nextFrame = false;
+		this->isNextFrameAlready = false;
+	}
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_Y) == GLFW_PRESS) {
+		glfwSetInputMode(window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_N) == GLFW_PRESS) {
+		glfwSetInputMode(window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+	
 
-	return std::move(window);
 }
 

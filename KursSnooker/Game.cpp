@@ -7,7 +7,7 @@ Game::Game(std::unique_ptr<Window> w, std::unique_ptr<Scene> scene)
 
 void Game::Loop()
 {
-	scene->Draw(std::move(this->window));
+	scene->Draw(this->window.get());
 	
 
 	glfwTerminate();

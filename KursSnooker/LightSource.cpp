@@ -16,10 +16,10 @@ LightSource::LightSource(const LightSource& other)
 		settings = nullptr;
 }
 
-void LightSource::Draw(ShaderProgram& shaderProgram, float deltaTime, glm::mat4 proj, glm::mat4 view)
+void LightSource::Draw(float deltaTime, glm::mat4 proj, glm::mat4 view)
 {
-	ApplyParameters(shaderProgram);
-	lightSprite->Draw(shaderProgram, deltaTime, proj, view);
+	ApplyParameters(lightSprite->GetShaderProgram());
+	lightSprite->Draw(deltaTime, proj, view);
 }
 
 void LightSource::ApplyParameters(ShaderProgram& shaderProgram)

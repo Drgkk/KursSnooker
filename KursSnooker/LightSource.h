@@ -19,7 +19,7 @@ class LightSource
 public:
 	LightSource(std::shared_ptr<Sprite> sprite, std::unique_ptr<LightSourceSettings> settings);
 	LightSource(const LightSource &other);
-	void Draw(ShaderProgram &shaderProgram, float deltaTime, glm::mat4 proj, glm::mat4 view);
+	void Draw(float deltaTime, glm::mat4 proj, glm::mat4 view);
 	void ApplyParameters(ShaderProgram& shaderProgram);
 private:
 	std::shared_ptr<Sprite> lightSprite;

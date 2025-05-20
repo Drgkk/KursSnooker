@@ -12,19 +12,12 @@
 class Sprite : public RigidBody
 {
 public:
-	Sprite(glm::vec3 scale, std::shared_ptr<Model<>> model);
-	//Sprite(const Sprite& other);
-	void Draw(ShaderProgram &shaderProgram, float deltaTime, glm::mat4 proj, glm::mat4 view);
-	//void AddBoundingVolume(std::unique_ptr<CollisionBoundingVolume> cbv);
-	//glm::vec3 GetPosition();
-	//bool CheckCollision(const Sprite& other);
+	Sprite(glm::vec3 scale, std::shared_ptr<Model<>> model, ShaderProgram& shaderProgram);
+	void Draw(float deltaTime, glm::mat4 proj, glm::mat4 view);
+	ShaderProgram& GetShaderProgram();
 private:
 	std::shared_ptr<Model<>> model;
-	////std::vector<std::unique_ptr<CollisionBoundingVolume>> boundingVolumes;
-	//glm::vec3 pos;
+	ShaderProgram& shaderProgram;
 	glm::vec3 scale;
-	//glm::mat4 rotation;
-	//glm::vec3 velocity;
-	//float g;
 };
 

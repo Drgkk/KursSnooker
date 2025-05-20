@@ -9,6 +9,8 @@ public:
 	Window(int width, int height, const char* title);
 	int GetWidth();
 	int GetHeight();
+	void SetWidth(int width);
+	void SetHeight(int height);
 	GLFWwindow* GetGLFWWindow();
 private:
 	void GenerateWindow(int width, int height, const char* title);

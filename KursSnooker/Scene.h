@@ -6,26 +6,27 @@
 #include "Window.h"
 #include "CollisionDetector.h"
 #include "CollisionBoundingVolume.h"
+#include "ForceRegistry.h"
 
 
 class Scene
 {
 public:
-	Scene(ShaderProgram& spritesShader, ShaderProgram& lightsShader, glm::vec3 skyboxColor, unsigned int maxContacts, unsigned int iterations);
+	Scene(glm::vec3 skyboxColor, unsigned int maxContacts, unsigned int iterations, std::unique_ptr<ForceRegistry> fr);
 	void AddSprite(std::shared_ptr<Sprite> sprite);
 	void AddCollisionBoundingVolume(std::unique_ptr<CollisionBoundingVolume> collisionBoundingVolume);
 	std::vector<std::shared_ptr<Sprite>>& GetSprites();
 	void AddLightSource(LightSource& sprite);
-	void Draw(std::unique_ptr<Window> window);
+	void Draw(Window* window);
+	ForceRegistry* GetForceRegistry();
 	unsigned int GenerateContacts();
 	void UpdateObjects(float duration);
 	void StartFrame();
 private:
+	Window* window;
 	std::vector<std::shared_ptr<Sprite>> sprites;
 	Camera player;
 	std::vector<std::unique_ptr<LightSource>> lightSources;
-	ShaderProgram& spritesShader;
-	ShaderProgram& lightsShader;
 	glm::vec3 skyboxColor;
 	bool calculateIterations;
 	ContactResolver contactResolver;
@@ -36,11 +37,15 @@ private:
 	void update(float duration);
 	CollisionData cData;
 
+
+
 	unsigned int maxContacts;
+	std::unique_ptr<ForceRegistry> fr;
 
-	ShaderProgram& getSpritesShader();
-	ShaderProgram& getLightsShader();
 
+	bool isPaused = true;
+	bool nextFrame = false;
+	bool isNextFrameAlready = false;
 
 	float lastX;
 	float lastY;
@@ -48,8 +53,10 @@ private:
 	float deltaTime;
 
 	void OnMouseMove(double xposIn, double yposIn);
+	void OnWindowResize(int width, int height);
 	static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+	static void window_resize(GLFWwindow* window, int width, int height);
 
-	std::unique_ptr<Window> processInput(std::unique_ptr<Window> window);
+	void processInput();
 };
 

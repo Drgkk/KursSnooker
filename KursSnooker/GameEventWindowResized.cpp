@@ -1,10 +1,10 @@
 #include "GameEventWindowResized.h"
 
-GameEventWindowResized::GameEventWindowResized(Window* window)
+GameEventWindowResized::GameEventWindowResized(GLFWwindow* window, int width, int height)
 {
-	this->window = window->GetGLFWWindow();
-	this->width = window->GetWidth();
-	this->height = window->GetHeight();
+	this->window = window;
+	this->width = width;
+	this->height = height;
 }
 
 void GameEventWindowResized::Register()

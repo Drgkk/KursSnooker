@@ -18,6 +18,16 @@ int Window::GetHeight()
 	return this->height;
 }
 
+void Window::SetWidth(int width)
+{
+	this->width = width;
+}
+
+void Window::SetHeight(int height)
+{
+	this->height = height;
+}
+
 GLFWwindow* Window::GetGLFWWindow()
 {
 	return this->window;
@@ -31,7 +41,7 @@ void Window::GenerateWindow(int width, int height, const char* title)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	window = glfwCreateWindow(800, 600, "Snooker", NULL, NULL);
+	window = glfwCreateWindow(width, height, "Snooker", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to generate GLFW window" << std::endl;
 		glfwTerminate();
