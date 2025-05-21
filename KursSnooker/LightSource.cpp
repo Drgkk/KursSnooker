@@ -26,3 +26,8 @@ void LightSource::ApplyParameters(ShaderProgram& shaderProgram)
 {
 	settings.get()->ApplyParameters(shaderProgram, lightSprite->GetPosition());
 }
+
+std::shared_ptr<Sprite> LightSource::GetSprite()
+{
+	return lightSprite;
+}

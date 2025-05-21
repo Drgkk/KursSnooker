@@ -50,6 +50,7 @@ void Scene::Draw(Window* window)
 		lastFrame = currentTime;
 
 		StartFrame();
+		processInput();
 		if (!isPaused || (nextFrame && !isNextFrameAlready)) {
 			update(deltaTime);
 			nextFrame = false;
@@ -57,7 +58,6 @@ void Scene::Draw(Window* window)
 		}
 			
 
-		processInput();
 
 		glClearColor(skyboxColor.x, skyboxColor.y, skyboxColor.z, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -77,6 +77,8 @@ void Scene::Draw(Window* window)
 		for (int i = 0; i < lightSources.size(); i++) {
 			lightSources[i]->Draw(deltaTime, projection, view);
 		}
+
+		
 
 		glfwSwapBuffers(window->GetGLFWWindow());
 		glfwPollEvents();
@@ -111,8 +113,8 @@ unsigned int Scene::GenerateContacts()
 	wall4.offset = -1.242f;
 
 	cData.reset(maxContacts);
-	cData.friction = 0.3f;
-	cData.restitution = 0.2f;
+	cData.friction = 0.05f;
+	cData.restitution = 0.6f;
 	cData.tolerance = 0.1f;
 
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
@@ -159,6 +161,8 @@ void Scene::debug(glm::mat4 projection, glm::mat4 view)
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
 		collisionBoundingVolumes[i]->Draw(projection, view);
 	}
+
+
 }
 
 void Scene::update(float duration)
@@ -180,25 +184,18 @@ void Scene::rayIntersect()
 	glm::mat4 view = player.GetViewMatrix();
 
 	glm::vec3 nearPt = glm::unProject(
-		glm::vec3(lastX, lastY, 0.0f),
+		glm::vec3(lastX, (float)window->GetHeight() - lastY, 0.0f),
 		view, proj, glm::vec4(0.0f, 0.0f, (float)window->GetWidth(), (float)window->GetHeight())
 	);
 	glm::vec3 farPt = glm::unProject(
-		glm::vec3(lastX, lastY, 1.0f),
+		glm::vec3(lastX, (float)window->GetHeight() - lastY, 1.0f),
 		view, proj, glm::vec4(0.0f, 0.0f, (float)window->GetWidth(), (float)window->GetHeight())
 	);
 
+
 	glm::vec3 ray = glm::normalize(farPt - nearPt);
 
-	/*Vertices rayVertices;
-	rayVertices.AddVertice(VertexData{.Position = nearPt});
-	rayVertices.AddVertice(VertexData{.Position = farPt});
-	rayVertices.SetupBuffer();
-	sprites[0]->GetShaderProgram().Use();
-	sprites[0]->GetShaderProgram().setMat4("projection", proj);
-	sprites[0]->GetShaderProgram().setMat4("view", view);
-	sprites[0]->GetShaderProgram().setMat4("model", glm::mat4(1.0f));
-	glDrawArrays(GL_LINES, 0, 2);*/
+	
 
 	unsigned int bestIndex;
 	glm::vec3 closestPoint(std::numeric_limits<float>::max());
@@ -220,7 +217,8 @@ void Scene::rayIntersect()
 		}
 	}
 
-	float forceMult = 1.0f;
+	float forceMult = 150.0f;
+
 
 	if (closestPoint.x != std::numeric_limits<float>::max()) {
 		collisionBoundingVolumes[bestIndex]->body->AddForceAtPoint(forceMult * ray, closestPoint);
@@ -246,8 +244,8 @@ void Scene::OnMouseMove(double xposIn, double yposIn)
 	lastX = xpos;
 	lastY = ypos;
 
-
-	player.ProcessMouseMovement(xoffset, yoffset);
+	if(isMouseCaptured)
+		player.ProcessMouseMovement(xoffset, yoffset);
 }
 
 void Scene::OnWindowResize(int width, int height)
@@ -305,13 +303,19 @@ void Scene::processInput()
 	}
 	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_Y) == GLFW_PRESS) {
 		glfwSetInputMode(window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		isMouseCaptured = true;
 	}
 	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_N) == GLFW_PRESS) {
 		glfwSetInputMode(window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		isMouseCaptured = false;
 	}
 	
-	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_T) == GLFW_PRESS) {
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_T) == GLFW_PRESS && !isRayHit) {
+		isRayHit = true;
 		this->rayIntersect();
+	}
+	if (glfwGetKey(window->GetGLFWWindow(), GLFW_KEY_T) == GLFW_RELEASE) {
+		isRayHit = false;
 	}
 
 }

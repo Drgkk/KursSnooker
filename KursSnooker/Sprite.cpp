@@ -9,12 +9,12 @@ Sprite::Sprite(glm::vec3 scale, std::shared_ptr<Model<>> model, ShaderProgram& s
 }
 
 
-void Sprite::Draw(float deltaTime, glm::mat4 proj, glm::mat4 view)
+void Sprite::Draw(float deltaTime, glm::mat4 proj, glm::mat4 view, glm::mat4 transormMatrix)
 {
 	shaderProgram.Use();
 	shaderProgram.setMat4("projection", proj);
 	shaderProgram.setMat4("view", view);
-	shaderProgram.setMat4("model", glm::scale(this->transformMatrix, this->scale));
+	shaderProgram.setMat4("model", glm::scale(transormMatrix, this->scale));
 	model.get()->Draw(shaderProgram);
 }
 
@@ -22,3 +22,4 @@ ShaderProgram& Sprite::GetShaderProgram()
 {
 	return shaderProgram;
 }
+

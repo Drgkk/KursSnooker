@@ -6,14 +6,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include "Models.h"
-#include "RigidBody.h"
+//#include "RigidBody.h"
 
 
-class Sprite : public RigidBody
+class Sprite/* : public RigidBody*/
 {
 public:
 	Sprite(glm::vec3 scale, std::shared_ptr<Model<>> model, ShaderProgram& shaderProgram);
-	void Draw(float deltaTime, glm::mat4 proj, glm::mat4 view);
+	void Draw(float deltaTime, glm::mat4 proj, glm::mat4 view, glm::mat4 transormMatrix);
 	ShaderProgram& GetShaderProgram();
 private:
 	std::shared_ptr<Model<>> model;

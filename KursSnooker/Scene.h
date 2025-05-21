@@ -13,9 +13,9 @@ class Scene
 {
 public:
 	Scene(glm::vec3 skyboxColor, unsigned int maxContacts, unsigned int iterations, std::unique_ptr<ForceRegistry> fr);
-	void AddSprite(std::shared_ptr<Sprite> sprite);
+	void AddBody(std::shared_ptr<RigidBody> body);
 	void AddCollisionBoundingVolume(std::unique_ptr<CollisionBoundingVolume> collisionBoundingVolume);
-	std::vector<std::shared_ptr<Sprite>>& GetSprites();
+	std::vector<std::shared_ptr<RigidBody>>& GetBodies();
 	void AddLightSource(LightSource& sprite);
 	void Draw(Window* window);
 	ForceRegistry* GetForceRegistry();
@@ -24,7 +24,7 @@ public:
 	void StartFrame();
 private:
 	Window* window;
-	std::vector<std::shared_ptr<Sprite>> sprites;
+	std::vector<std::unique_ptr<RigidBody>> bodies;
 	Camera player;
 	std::vector<std::unique_ptr<LightSource>> lightSources;
 	glm::vec3 skyboxColor;
@@ -38,14 +38,16 @@ private:
 	CollisionData cData;
 
 
-
 	unsigned int maxContacts;
 	std::unique_ptr<ForceRegistry> fr;
 
-
+	bool isMouseCaptured = true;
 	bool isPaused = true;
 	bool nextFrame = false;
 	bool isNextFrameAlready = false;
+
+	bool isRayHit = false;
+
 
 	float lastX;
 	float lastY;

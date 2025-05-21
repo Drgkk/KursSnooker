@@ -71,6 +71,7 @@ public:
 	void SetAcceleration(const float x, const float y, const float z);
 	void GetAcceleration(glm::vec3* acceleration) const;
 	glm::vec3 GetAcceleration() const;
+	void Intersects(RigidBody& other);
 protected:
 	float inverseMass;
 	glm::mat3 inverseInertiaTensor;
@@ -89,5 +90,6 @@ protected:
 	glm::vec3 torqueAccum;
 	glm::vec3 acceleration;
 	glm::vec3 lastFrameAcceleration;
+	virtual void onContact(RigidBody& other) {};
 };
 

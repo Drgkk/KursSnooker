@@ -21,6 +21,7 @@ public:
 	LightSource(const LightSource &other);
 	void Draw(float deltaTime, glm::mat4 proj, glm::mat4 view);
 	void ApplyParameters(ShaderProgram& shaderProgram);
+	std::shared_ptr<Sprite> GetSprite();
 private:
 	std::shared_ptr<Sprite> lightSprite;
 	glm::vec3 ambient;

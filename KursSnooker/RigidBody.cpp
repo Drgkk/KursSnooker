@@ -79,7 +79,7 @@ void RigidBody::AddForceAtPoint(const glm::vec3& force, const glm::vec3& point)
     glm::vec3 pt = point;
     pt = pt - position;
 
-    forceAccum = forceAccum + point;
+    forceAccum = forceAccum + force;
     torqueAccum = torqueAccum + (glm::cross(pt, force));
 
     isAwake = true;
@@ -117,6 +117,11 @@ void RigidBody::GetAcceleration(glm::vec3* acceleration) const
 glm::vec3 RigidBody::GetAcceleration() const
 {
     return this->acceleration;
+}
+
+void RigidBody::Intersects(RigidBody& other)
+{
+    this->onContact(other);
 }
 
 void RigidBody::CalculateDerivedData()

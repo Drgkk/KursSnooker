@@ -48,14 +48,14 @@ int main() {
 	stbi_set_flip_vertically_on_load(true);
 	glEnable(GL_DEPTH_TEST);
 
-	const float ballLinearDamping = 0.7f;
+	const float ballLinearDamping = 0.8f;
 	const float ballAngularDamping = 0.75f;
 	const float ballsDisplacement = 0.0f;
 	const float ballsSize = 0.04f;
 	glm::mat4 ballsRotation = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	ballsRotation = glm::rotate(ballsRotation, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-	std::shared_ptr<Gravity> gravity = std::make_shared<Gravity>(glm::vec3(0.0f, -1.0f, 0.0f));
+	std::shared_ptr<Gravity> gravity = std::make_shared<Gravity>(glm::vec3(0.0f, -1.5f, 0.0f));
 
 	std::unique_ptr<RegularSceneBuilder> sceneBuilder = std::make_unique<RegularSceneBuilder>(
 		glm::vec3(0.05f, 0.05f, 0.05f), 250, 500, std::move(std::make_unique<ForceRegistry>())
@@ -216,7 +216,7 @@ int main() {
 	sceneBuilder->AddForce(gravity);
 
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 0.142f, ballLinearDamping, ballAngularDamping, glm::vec3(0.0f, 0.0f, 4.5f), glm::vec3(0.0f, 0.0f, 0.0f));
+		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 0.142f, ballLinearDamping, ballAngularDamping, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	/*sceneBuilder->BuildSprite(
 		"resources/objects/crate/crate.obj", glm::vec3(0.0f, 12.1f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f),
 		glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram

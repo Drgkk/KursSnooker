@@ -324,9 +324,9 @@ glm::vec3 Contact::calculateFrictionImpulse(glm::mat3* inverseInertiaTensor)
 	deltaVelocity *= deltaVelWorld;
 	deltaVelocity *= contactToWorld;
 
-	deltaVelocity[0] += inverseMass;
-	deltaVelocity[4] += inverseMass;
-	deltaVelocity[8] += inverseMass;
+	deltaVelocity[0][0] += inverseMass;
+	deltaVelocity[1][1] += inverseMass;
+	deltaVelocity[2][2] += inverseMass;
 
 	glm::mat3 impulseMatrix = glm::inverse(deltaVelocity);
 
@@ -342,15 +342,15 @@ glm::vec3 Contact::calculateFrictionImpulse(glm::mat3* inverseInertiaTensor)
 	if (planarImpulse > impulseContact.x * friction)
 	{
 
-		impulseContact.y /= planarImpulse;
-		impulseContact.z /= planarImpulse;
+		impulseContact.y = impulseContact.y / planarImpulse;
+		impulseContact.z = impulseContact.z / planarImpulse;
 
 		impulseContact.x = deltaVelocity[0][0] +
 			deltaVelocity[1][0] * friction * impulseContact.y +
 			deltaVelocity[2][0] * friction * impulseContact.z;
 		impulseContact.x = desiredDeltaVelocity / impulseContact.x;
-		impulseContact.y *= friction * impulseContact.x;
-		impulseContact.z *= friction * impulseContact.x;
+		impulseContact.y = impulseContact.y * friction * impulseContact.x;
+		impulseContact.z = impulseContact.z * friction * impulseContact.x;
 	}
 	return impulseContact;
 }

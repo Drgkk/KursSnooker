@@ -14,6 +14,7 @@ void Vertices::AddVertice(VertexData vertice)
 	verticesData.push_back(vertice);
 }
 
+
 void Vertices::setVertexAttributePointers()
 {
 	setVertexPositions();
