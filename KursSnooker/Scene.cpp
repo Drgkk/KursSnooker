@@ -4,7 +4,7 @@
 
 Scene::Scene(glm::vec3 skyboxColor,
 	 unsigned int maxContacts, unsigned int iterations, std::unique_ptr<ForceRegistry> fr)
-	: skyboxColor(skyboxColor), player(glm::vec3(0.0f, 0.0f, 0.3f)),
+	: skyboxColor(skyboxColor), player(glm::vec3(0.0f, 0.5f, 0.0f)),
      contactResolver(iterations), maxContacts(maxContacts), fr(std::move(fr))
 {
 	this->contactResolver.SetEpsilon(0.01f, 0.0005f);
@@ -39,6 +39,7 @@ void Scene::Draw(Window* window)
 	glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
 	glfwSetCursorPosCallback(window->GetGLFWWindow(), &Scene::mouse_callback);
 	glfwSetFramebufferSizeCallback(window->GetGLFWWindow(), &Scene::window_resize);
+	glfwSetScrollCallback(window->GetGLFWWindow(), &Scene::mouse_scroll);
 	float lastX = window->GetWidth() / 2.0f;
 	float lastY = window->GetHeight() / 2.0f;
 	firstMouse = true;
@@ -217,7 +218,6 @@ void Scene::rayIntersect()
 		}
 	}
 
-	float forceMult = 150.0f;
 
 
 	if (closestPoint.x != std::numeric_limits<float>::max()) {
@@ -254,6 +254,16 @@ void Scene::OnWindowResize(int width, int height)
 	this->window->SetHeight(height);
 }
 
+void Scene::OnMouseScroll(double xoffset, double yoffset)
+{
+	forceMult += 2.0f*(float)yoffset;
+	if (forceMult < 10.0f)
+		forceMult = 10.0f;
+	if (forceMult > 180.0f)
+		forceMult = 180.0f;
+
+}
+
 void Scene::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
 	Scene* scene = static_cast<Scene*>(
@@ -271,6 +281,15 @@ void Scene::window_resize(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 	if (scene)
 		scene->OnWindowResize(width, height);
+}
+
+void Scene::mouse_scroll(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Scene* scene = static_cast<Scene*>(
+		glfwGetWindowUserPointer(window)
+		);
+	if (scene)
+		scene->OnMouseScroll(xoffset, yoffset);
 }
 
 void Scene::processInput()

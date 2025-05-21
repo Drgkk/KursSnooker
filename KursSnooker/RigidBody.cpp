@@ -119,9 +119,10 @@ glm::vec3 RigidBody::GetAcceleration() const
     return this->acceleration;
 }
 
-void RigidBody::Intersects(RigidBody& other)
+void RigidBody::Intersects(RigidBody* other)
 {
     this->onContact(other);
+    //other->onContact(this);
 }
 
 void RigidBody::CalculateDerivedData()

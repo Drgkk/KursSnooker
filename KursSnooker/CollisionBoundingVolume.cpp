@@ -40,7 +40,8 @@ glm::vec3 CollisionBoundingVolume::GetAxis(unsigned int index) const
 bool OBB::Intersects(const CollisionBoundingVolume& other, CollisionData* collisionData) const
 {
 	bool value = other.IntersectsOBB(*this, collisionData);
-	this->body->Intersects(*other.body.get());
+	if(value)
+		this->body->Intersects(other.body.get());
 	return value;
 }
 
@@ -68,7 +69,11 @@ bool OBB::IntersectsRay(const glm::vec3 nearPt, const glm::vec3 farPt, glm::vec3
 bool CollisionSphere::Intersects(const CollisionBoundingVolume& other, CollisionData* collisionData) const
 {
 	bool value = other.IntersectsSphere(*this, collisionData);
-	this->body->Intersects(*other.body.get());
+	if (value) {
+		this->body->Intersects(other.body.get());
+		other.body->Intersects(this->body.get());
+	}
+		
 	return value;
 }
 

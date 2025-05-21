@@ -39,12 +39,12 @@ RegularSceneBuilder::RegularSceneBuilder(glm::vec3 skyboxColor,
 	this->Reset();
 }
 
-void RegularSceneBuilder::BuildSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
-	glm::mat4 rotation, ShaderProgram& shaderProgram) const
-{
-	std::shared_ptr<Sprite> sprite = createSprite(path, pos, scale, rotation, shaderProgram);
-	this->scene.get()->AddSprite(sprite);
-}
+//void RegularSceneBuilder::BuildSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
+//	glm::mat4 rotation, ShaderProgram& shaderProgram) const
+//{
+//	std::shared_ptr<Sprite> sprite = createSprite(path, pos, scale, rotation, shaderProgram);
+//	this->scene.get()->AddSprite(sprite);
+//}
 
 std::shared_ptr<Sprite> RegularSceneBuilder::createSprite(std::string const& path, glm::vec3 pos, glm::vec3 scale,
 	glm::mat4 rotation, ShaderProgram& shaderProgram) const
@@ -60,8 +60,35 @@ std::shared_ptr<Sprite> RegularSceneBuilder::createSprite(std::string const& pat
 	return sprite;
 }
 
+void RegularSceneBuilder::BuildSnookerBall(std::string const& path, glm::vec3 pos, glm::vec3 scale, glm::mat4 rotation, ShaderProgram& shaderProgram) const
+{
+	ObjectAssimpParser<> objectAssimpParser;
+	std::shared_ptr<SnookerBall> snookerBall = std::make_shared<SnookerBall>(scale, std::make_shared<Model<>>(path, objectAssimpParser), shaderProgram);
+	snookerBall->SetPosition(pos);
+	snookerBall->SetOrientation(glm::quat_cast(rotation));
+	this->scene.get()->AddSprite(snookerBall);
+}
+
+void RegularSceneBuilder::BuildCueBall(std::string const& path, glm::vec3 pos, glm::vec3 scale, glm::mat4 rotation, ShaderProgram& shaderProgram) const
+{
+	ObjectAssimpParser<> objectAssimpParser;
+	std::shared_ptr<CueBall> cueBall = std::make_shared<CueBall>(scale, std::make_shared<Model<>>(path, objectAssimpParser), shaderProgram);
+	cueBall->SetPosition(pos);
+	cueBall->SetOrientation(glm::quat_cast(rotation));
+	this->scene.get()->AddSprite(cueBall);
+}
+
+void RegularSceneBuilder::BuildSnookerHole(std::string const& path, glm::vec3 pos, glm::vec3 scale, glm::mat4 rotation, ShaderProgram& shaderProgram) const
+{
+	ObjectAssimpParser<> objectAssimpParser;
+	std::shared_ptr<SnookerHole> snookerHole = std::make_shared<SnookerHole>(scale, std::make_shared<Model<>>(path, objectAssimpParser), shaderProgram);
+	snookerHole->SetPosition(pos);
+	snookerHole->SetOrientation(glm::quat_cast(rotation));
+	this->scene.get()->AddSprite(snookerHole);
+}
+
 void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, glm::vec3 halfSize, ShaderProgram& shaderProgram,
-	float mass, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
+	float mass, bool isClipable, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
 {
 	glm::mat4 offset = glm::mat4(1.0f);
 	offset[0] = glm::vec4(axisX, 0.0f);
@@ -76,6 +103,7 @@ void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::ve
 	box->body->SetRotation(angularVelocity);
 	glm::mat3 it = setBlockInertiaTensor(halfSize, box->body->GetMass());
 	box->body->SetInertiaTensor(it);
+	box->body->isClippable = isClipable;
 	box->body->CalculateDerivedData();
 	box->CalculateInternals();
 
@@ -87,7 +115,8 @@ void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::ve
 	this->scene->AddCollisionBoundingVolume(std::move(box));
 }
 
-void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, float radius, ShaderProgram& shaderProgram, float mass, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
+void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, float radius, ShaderProgram& shaderProgram, 
+	float mass, bool isClipable, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
 {
 	glm::mat4 offset = glm::mat4(1.0f);
 	offset[0] = glm::vec4(axisX, 0.0f);
@@ -102,6 +131,7 @@ void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm:
 	sphere->body->SetRotation(angularVelocity);
 	glm::mat3 it = setSphereInertiaTensor(radius, mass);
 	sphere->body->SetInertiaTensor(it);
+	sphere->body->isClippable = isClipable;
 	sphere->body->CalculateDerivedData();
 	sphere->CalculateInternals();
 

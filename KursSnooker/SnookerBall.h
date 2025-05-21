@@ -1,14 +1,14 @@
 #pragma once
 #include "Sprite.h"
-#include "RigidBody.h"
+#include "CueBall.h"
+#include "SnookerHole.h"
 
-class SnookerBall : public RigidBody
+class SnookerBall : public Sprite
 {
 public:
-	SnookerBall(std::unique_ptr<Sprite> sprite);
+	SnookerBall(glm::vec3 scale, std::shared_ptr<Model<>> model, ShaderProgram& shaderProgram);
 protected:
-	void onContact(RigidBody& other) override;
+	void onContact(RigidBody* other) override;
 private:
-	std::unique_ptr<Sprite> sprite;
 };
 

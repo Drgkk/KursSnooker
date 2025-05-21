@@ -57,6 +57,9 @@ bool CollisionDetector::OBBandOBB(const OBB& one, const OBB& two, CollisionData*
         return false;
     }
 
+    if (one.body->isClippable || two.body->isClippable)
+        return true;
+
     if (bestCase < 3) {
         fillPointFaceOBBOBB(one, two, toCentre, collisionData, bestCase, bestOverlap);
         collisionData->addContacts(1);
@@ -135,6 +138,8 @@ unsigned int CollisionDetector::OBBAndHalfSpace(const OBB& box, const CollisionP
         Contact contact;
         if (vertexDistance <= plane.offset)
         {
+            if (box.body->isClippable)
+                return 1;
             contact.contactPoint = plane.direction;
             contact.contactPoint *= (vertexDistance - plane.offset);
             contact.contactPoint += vertexPos;
@@ -160,6 +165,9 @@ unsigned int CollisionDetector::SphereAndHalfSpace(const CollisionSphere& sphere
     glm::vec3 position = sphere.GetAxis(3);
     float ballDistance = glm::dot(plane.direction, position) - sphere.radius - plane.offset;
     if (ballDistance >= 0) return 0;
+
+    if (sphere.body->isClippable)
+        return 1;
 
     Contact contact;
     contact.contactNormal = plane.direction;
@@ -205,6 +213,9 @@ unsigned int CollisionDetector::OBBAndSphere(const OBB& box, const CollisionSphe
     dist = glm::dot(helpVec, helpVec);
     if (dist > sphere.radius * sphere.radius) return 0;
 
+    if (box.body->isClippable || sphere.body->isClippable)
+        return 1;
+
     glm::vec3 closestPtWorld = glm::vec3(box.GetTransform() * glm::vec4(closestPt, 1.0f));
 
     Contact contact;
@@ -233,6 +244,9 @@ unsigned int CollisionDetector::SphereAndSphere(const CollisionSphere& one, cons
     {
         return 0;
     }
+
+    if (one.body->isClippable || two.body->isClippable)
+        return 1;
 
     glm::vec3 normal = midline * ((1.0f) / size);
 

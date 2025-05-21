@@ -13,9 +13,9 @@ class Scene
 {
 public:
 	Scene(glm::vec3 skyboxColor, unsigned int maxContacts, unsigned int iterations, std::unique_ptr<ForceRegistry> fr);
-	void AddBody(std::shared_ptr<RigidBody> body);
+	void AddSprite(std::shared_ptr<Sprite> sprite);
 	void AddCollisionBoundingVolume(std::unique_ptr<CollisionBoundingVolume> collisionBoundingVolume);
-	std::vector<std::shared_ptr<RigidBody>>& GetBodies();
+	std::vector<std::shared_ptr<Sprite>>& GetSprites();
 	void AddLightSource(LightSource& sprite);
 	void Draw(Window* window);
 	ForceRegistry* GetForceRegistry();
@@ -24,7 +24,7 @@ public:
 	void StartFrame();
 private:
 	Window* window;
-	std::vector<std::unique_ptr<RigidBody>> bodies;
+	std::vector<std::shared_ptr<Sprite>> sprites;
 	Camera player;
 	std::vector<std::unique_ptr<LightSource>> lightSources;
 	glm::vec3 skyboxColor;
@@ -42,11 +42,12 @@ private:
 	std::unique_ptr<ForceRegistry> fr;
 
 	bool isMouseCaptured = true;
-	bool isPaused = true;
+	bool isPaused = false;
 	bool nextFrame = false;
 	bool isNextFrameAlready = false;
 
 	bool isRayHit = false;
+	float forceMult = 10.0f;
 
 
 	float lastX;
@@ -57,8 +58,10 @@ private:
 	void rayIntersect();
 	void OnMouseMove(double xposIn, double yposIn);
 	void OnWindowResize(int width, int height);
+	void OnMouseScroll(double xoffset, double yoffset);
 	static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 	static void window_resize(GLFWwindow* window, int width, int height);
+	static void mouse_scroll(GLFWwindow* window, double xoffset, double yoffset);
 
 	void processInput();
 };
