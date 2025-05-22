@@ -369,3 +369,98 @@ bool CollisionDetector::RayAndSphereWorld(glm::vec3 nearPt, glm::vec3 farPt, con
     worldPoint =  p;
     return true;
 }
+
+bool CollisionDetector::RayAndOBBWorld(glm::vec3 nearPt, glm::vec3 farPt, const OBB& box, glm::vec3& worldPoint)
+{
+    float tMin = 0.0f;
+    float tMax = std::numeric_limits<float>::max();
+    const float threshold = 0.00000001f;
+    glm::mat4 inverse = glm::inverse(box.GetTransform());
+    const glm::vec3 pos = box.offset[3];
+
+    glm::vec3 start = glm::vec3(inverse * glm::vec4(nearPt, 1.0f));
+    glm::vec3 end = glm::vec3(inverse * glm::vec4(farPt, 1.0f));
+    const glm::vec3 delta = pos - start;
+
+    glm::vec3 rayDirection = glm::normalize(end - start);
+
+    glm::vec3 aabbMin = -1.0f * box.offset[0] * box.HalfSize.x - 1.0f * box.offset[1] * box.HalfSize.y - 1.0f * box.offset[2] * box.HalfSize.z;
+    glm::vec3 aabbMax = 1.0f * box.offset[0] * box.HalfSize.x + 1.0f * box.offset[1] * box.HalfSize.y + 1.0f * box.offset[2] * box.HalfSize.z;
+
+
+    glm::vec3 xAxis = box.offset[0];
+    float e = glm::dot(xAxis, delta);
+    float f = glm::dot(rayDirection, xAxis);
+    if (fabs(f) > threshold) {
+        float t1 = (e + aabbMin.x) / f;
+        float t2 = (e + aabbMax.x) / f;
+        if (t1 > t2) {
+            const float w = t1;
+            t1 = t2;
+            t2 = w;
+        }
+        if (t2 < tMax)
+            tMax = t2;
+        if (t1 > tMin)
+            tMin = t1;
+
+        if (tMax < tMin)
+            return false;
+    }
+    else {
+        if (-e + aabbMin.x > 0.0f || -e + aabbMax.x < 0.0f)
+            return false;
+    }
+
+    glm::vec3 yAxis = box.offset[1];
+    e = glm::dot(yAxis, delta);
+    f = glm::dot(rayDirection, yAxis);
+    if (fabs(f) > threshold) {
+        float t1 = (e + aabbMin.y) / f;
+        float t2 = (e + aabbMax.y) / f;
+        if (t1 > t2) {
+            const float w = t1;
+            t1 = t2;
+            t2 = w;
+        }
+        if (t2 < tMax)
+            tMax = t2;
+        if (t1 > tMin)
+            tMin = t1;
+
+        if (tMax < tMin)
+            return false;
+    }
+    else {
+        if (-e + aabbMin.y > 0.0f || -e + aabbMax.y < 0.0f)
+            return false;
+    }
+
+
+    glm::vec3 zAxis = box.offset[2];
+    e = glm::dot(zAxis, delta);
+    f = glm::dot(rayDirection, zAxis);
+    if (fabs(f) > threshold) {
+        float t1 = (e + aabbMin.z) / f;
+        float t2 = (e + aabbMax.z) / f;
+        if (t1 > t2) {
+            const float w = t1;
+            t1 = t2;
+            t2 = w;
+        }
+        if (t2 < tMax)
+            tMax = t2;
+        if (t1 > tMin)
+            tMin = t1;
+
+        if (tMax < tMin)
+            return false;
+    }
+    else {
+        if (-e + aabbMin.z > 0.0f || -e + aabbMax.z < 0.0f)
+            return false;
+    }
+
+    worldPoint = glm::vec3(box.GetTransform() * glm::vec4(start + rayDirection * tMin, 1.0f)) ;
+    return true;
+}

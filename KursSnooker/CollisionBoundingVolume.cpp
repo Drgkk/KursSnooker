@@ -62,7 +62,7 @@ bool OBB::IntersectsSphere(const CollisionSphere& other, CollisionData* collisio
 
 bool OBB::IntersectsRay(const glm::vec3 nearPt, const glm::vec3 farPt, glm::vec3& worldPoint) const
 {
-	return false;
+	return CollisionDetector::RayAndOBBWorld(nearPt, farPt, *this, worldPoint);
 }
 
 

@@ -65,7 +65,7 @@ void Scene::Draw(Window* window)
 		glm::mat4 projection = glm::perspective(glm::radians(player.Zoom), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 		glm::mat4 view = player.GetViewMatrix();
 
-		debug(projection, view);
+		//debug(projection, view);
 
 		
 		for (int i = 0; i < sprites.size(); i++) {
@@ -259,8 +259,8 @@ void Scene::OnMouseScroll(double xoffset, double yoffset)
 	forceMult += 2.0f*(float)yoffset;
 	if (forceMult < 10.0f)
 		forceMult = 10.0f;
-	if (forceMult > 180.0f)
-		forceMult = 180.0f;
+	if (forceMult > 170.0f)
+		forceMult = 170.0f;
 
 }
 
