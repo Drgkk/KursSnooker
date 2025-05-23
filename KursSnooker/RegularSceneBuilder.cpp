@@ -87,6 +87,15 @@ void RegularSceneBuilder::BuildSnookerHole(std::string const& path, glm::vec3 po
 	this->scene.get()->AddSprite(snookerHole);
 }
 
+void RegularSceneBuilder::BuildSnookerTable(std::string const& path, glm::vec3 pos, glm::vec3 scale, glm::mat4 rotation, ShaderProgram& shaderProgram) const
+{
+	ObjectAssimpParser<> objectAssimpParser;
+	std::shared_ptr<SnookerHole> snookerTable = std::make_shared<SnookerHole>(scale, std::make_shared<Model<>>(path, objectAssimpParser), shaderProgram);
+	snookerTable->SetPosition(pos);
+	snookerTable->SetOrientation(glm::quat_cast(rotation));
+	this->scene.get()->AddSprite(snookerTable);
+}
+
 void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, glm::vec3 halfSize, ShaderProgram& shaderProgram,
 	float mass, bool isClipable, float linearDamping, float angularDamping, glm::vec3 velocity, glm::vec3 angularVelocity)
 {

@@ -177,6 +177,7 @@
     <ClCompile Include="ShaderVertex.cpp" />
     <ClCompile Include="SnookerBall.cpp" />
     <ClCompile Include="SnookerHole.cpp" />
+    <ClCompile Include="SnookerTable.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="SnookerBall.h" />
     <ClInclude Include="SnookerHole.h" />
     <ClInclude Include="SnookerImport.h" />
+    <ClInclude Include="SnookerTable.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Textures.h" />

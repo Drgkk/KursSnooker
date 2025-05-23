@@ -43,7 +43,7 @@ void Scene::Draw(Window* window)
 	float lastX = window->GetWidth() / 2.0f;
 	float lastY = window->GetHeight() / 2.0f;
 	firstMouse = true;
-	float lastFrame = 0.0f;
+	float lastFrame = static_cast<float>(glfwGetTime());
 	int count = 1;
 	while (!glfwWindowShouldClose(window->GetGLFWWindow())) {
 		float currentTime = static_cast<float>(glfwGetTime());
@@ -52,7 +52,7 @@ void Scene::Draw(Window* window)
 
 		StartFrame();
 		processInput();
-		if (!isPaused || (nextFrame && !isNextFrameAlready)) {
+		if ((!isPaused || (nextFrame && !isNextFrameAlready)) && deltaTime != 0.0f) {
 			update(deltaTime);
 			nextFrame = false;
 			isNextFrameAlready = true;
@@ -98,9 +98,9 @@ unsigned int Scene::GenerateContacts()
 
 	CollisionPlane plane;
 	plane.direction = glm::vec3(0.0f, 1.0f, 0.0f);
-	plane.offset = 0.279f;
+	plane.offset = -0.547f;
 
-	CollisionPlane wall1;
+	/*CollisionPlane wall1;
 	wall1.direction = glm::vec3(1.0f, 0.0f, 0.0f);
 	wall1.offset = -0.7f;
 	CollisionPlane wall2;
@@ -111,7 +111,7 @@ unsigned int Scene::GenerateContacts()
 	wall3.offset = -1.242f;
 	CollisionPlane wall4;
 	wall4.direction = glm::vec3(0.0f, 0.0f, -1.0f);
-	wall4.offset = -1.242f;
+	wall4.offset = -1.242f;*/
 
 	cData.reset(maxContacts);
 	cData.friction = 0.05f;
@@ -121,19 +121,20 @@ unsigned int Scene::GenerateContacts()
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
 		if (!cData.hasMoreContacts()) return 0;
 		collisionBoundingVolumes[i]->IntersectsHalfSpace(plane, &cData);
-		if (!cData.hasMoreContacts()) return 0;
-		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall1, &cData);
+		//if (!cData.hasMoreContacts()) return 0;
+		/*collisionBoundingVolumes[i]->IntersectsHalfSpace(wall1, &cData);
 		if (!cData.hasMoreContacts()) return 0;
 		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall2, &cData);
 		if (!cData.hasMoreContacts()) return 0;
 		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall3, &cData);
 		if (!cData.hasMoreContacts()) return 0;
-		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall4, &cData);
+		collisionBoundingVolumes[i]->IntersectsHalfSpace(wall4, &cData);*/
 	}
 
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
 		for (int j = i + 1; j < collisionBoundingVolumes.size(); j++) {
 			if (!cData.hasMoreContacts()) return 0;
+			if (collisionBoundingVolumes[i]->body == collisionBoundingVolumes[j]->body) continue;
 			collisionBoundingVolumes[i]->Intersects(*collisionBoundingVolumes[j].get(), &cData);
 		}
 	}

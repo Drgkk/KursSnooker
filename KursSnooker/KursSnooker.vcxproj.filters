@@ -150,6 +150,9 @@
     <ClCompile Include="SnookerHole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SnookerTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderProgram.h">
@@ -285,6 +288,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SnookerHole.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SnookerTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

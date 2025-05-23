@@ -23,6 +23,8 @@ public:
 		glm::mat4 rotation, ShaderProgram& shaderProgram) const override;
 	void BuildSnookerHole(std::string const& path, glm::vec3 pos, glm::vec3 scale,
 		glm::mat4 rotation, ShaderProgram& shaderProgram) const override;
+	void BuildSnookerTable(std::string const& path, glm::vec3 pos, glm::vec3 scale,
+		glm::mat4 rotation, ShaderProgram& shaderProgram) const;
 	
 	void AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::vec3 axisY, glm::vec3 axisZ, glm::vec3 halfSize, ShaderProgram& shaderProgram,
 		float mass, bool isClipable = false, float linearDamping = 0.9f, float angularDamping = 0.9f, glm::vec3 velocity = glm::vec3(0.0f), glm::vec3 angularVelocity = glm::vec3(0.0f)) override;

@@ -60,9 +60,38 @@ int main() {
 	std::unique_ptr<RegularSceneBuilder> sceneBuilder = std::make_unique<RegularSceneBuilder>(
 		glm::vec3(0.05f, 0.05f, 0.05f), 250, 500, std::move(std::make_unique<ForceRegistry>())
 		);
-	sceneBuilder->BuildSnookerBall(
+	sceneBuilder->BuildSnookerTable(
 		"resources/objects/snookertable/snookertable.obj", glm::vec3(0.0f, 0.2f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(1.0f, 1.0f, 0.0f)), objectShaderProgram
 		);
+
+	
+	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.69f, 0.077f, 1.208f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+
+	sceneBuilder->AddBox(glm::vec3(0.807f, 0.05f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.005f, 0.09f, 1.32f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+	sceneBuilder->AddBox(glm::vec3(-0.807f, 0.05f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.005f, 0.09f, 1.32f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+
+	sceneBuilder->AddBox(glm::vec3(0.758f, 0.05f, 0.629f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.055f, 0.09f, 0.574f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+	sceneBuilder->AddBox(glm::vec3(0.758f, 0.05f, -0.629f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.055f, 0.09f, 0.574f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+	sceneBuilder->AddBox(glm::vec3(-0.758f, 0.05f, 0.629f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.055f, 0.09f, 0.574f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+	sceneBuilder->AddBox(glm::vec3(-0.758f, 0.05f, -0.629f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.055f, 0.09f, 0.574f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+
+	sceneBuilder->AddBox(glm::vec3(0.0f, 0.05f, 1.323f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.8f, 0.09f, 0.005f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+	sceneBuilder->AddBox(glm::vec3(0.0f, 0.05f, -1.323f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.8f, 0.09f, 0.005f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+
+	sceneBuilder->AddBox(glm::vec3(0.0f, 0.05f, 1.335f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.624f, 0.09f, 0.115f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+	sceneBuilder->AddBox(glm::vec3(0.0f, 0.05f, -1.335f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.624f, 0.09f, 0.115f), collisionVolumesShaderProgram,
+		1000000000.0f, false);
+
 	sceneBuilder->BuildSnookerBall(
 		"resources/objects/Floor/floor.obj", glm::vec3(0.0f, -0.61f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::mat4(1.0f), objectShaderProgram
 		);
@@ -218,83 +247,90 @@ int main() {
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 0.142f, false, ballLinearDamping, ballAngularDamping, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
+
+	const float SnookerHoleHeight = 0.16f;
+
 	sceneBuilder->BuildSnookerHole(
-		"", glm::vec3(0.69f, 0.315f, 1.27f), glm::vec3(0.06f), glm::mat4(1.0f), collisionVolumesShaderProgram
+		"", glm::vec3(0.69f, SnookerHoleHeight, 1.27f), glm::vec3(0.06f), glm::mat4(1.0f), collisionVolumesShaderProgram
 	);
 
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 1.0f, true, ballLinearDamping, ballAngularDamping);
 
 	sceneBuilder->BuildSnookerHole(
-		"", glm::vec3(-0.69f, 0.315f, 1.27f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
+		"", glm::vec3(-0.69f, SnookerHoleHeight, 1.27f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
 	);
 
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 1.0f, true, ballLinearDamping, ballAngularDamping);
 
 	sceneBuilder->BuildSnookerHole(
-		"", glm::vec3(-0.69f, 0.315f, -1.27f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
+		"", glm::vec3(-0.69f, SnookerHoleHeight, -1.27f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
 	);
 
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 1.0f, true, ballLinearDamping, ballAngularDamping);
 
 	sceneBuilder->BuildSnookerHole(
-		"", glm::vec3(0.69f, 0.315f, -1.27f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
+		"", glm::vec3(0.69f, SnookerHoleHeight, -1.27f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
 	);
 
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 1.0f, true, ballLinearDamping, ballAngularDamping);
 
 	sceneBuilder->BuildSnookerHole(
-		"", glm::vec3(0.74f, 0.315f, 0.0f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
+		"", glm::vec3(0.74f, SnookerHoleHeight, 0.0f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
 	);
 
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 1.0f, true, ballLinearDamping, ballAngularDamping);
 
 	sceneBuilder->BuildSnookerHole(
-		"", glm::vec3(-0.74f, 0.315f, 0.0f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
+		"", glm::vec3(-0.74f, SnookerHoleHeight, 0.0f), glm::vec3(0.06f), glm::mat4(1.0f), lightShaderProgram
 	);
 
 	sceneBuilder->AddSphere(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), ballsSize, collisionVolumesShaderProgram, 1.0f, true, ballLinearDamping, ballAngularDamping);
 
-	sceneBuilder->BuildCueBall(
-		"resources/objects/crate/crate.obj", glm::vec3(0.0f, 12.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
-		glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
-	);
-	sceneBuilder->AddForce(gravity);
 
-	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
-		3.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
 
-	sceneBuilder->BuildCueBall(
-		"resources/objects/crate/crate.obj", glm::vec3(0.0f, 5.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
-		glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
-	);
-	sceneBuilder->AddForce(gravity);
 
-	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
-		15.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
 
-	sceneBuilder->BuildCueBall(
-		"resources/objects/crate/crate.obj", glm::vec3(0.0f, 7.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
-		glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
-	);
-	sceneBuilder->AddForce(gravity);
+	//sceneBuilder->BuildCueBall(
+	//	"resources/objects/crate/crate.obj", glm::vec3(0.0f, 12.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
+	//	glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
+	//);
+	//sceneBuilder->AddForce(gravity);
 
-	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
-		1.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
+	//sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
+	//	3.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
 
-	sceneBuilder->BuildCueBall(
-		"resources/objects/crate/crate.obj", glm::vec3(0.0f, 2.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
-		glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
-	);
-	sceneBuilder->AddForce(gravity);
+	//sceneBuilder->BuildCueBall(
+	//	"resources/objects/crate/crate.obj", glm::vec3(0.0f, 1.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
+	//	glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
+	//);
+	//sceneBuilder->AddForce(gravity);
 
-	sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
-		5.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
+	//sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
+	//	10.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
+
+	//sceneBuilder->BuildCueBall(
+	//	"resources/objects/crate/crate.obj", glm::vec3(0.0f, 7.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
+	//	glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
+	//);
+	//sceneBuilder->AddForce(gravity);
+
+	//sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
+	//	1.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
+
+	//sceneBuilder->BuildCueBall(
+	//	"resources/objects/crate/crate.obj", glm::vec3(0.0f, 2.1f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f),
+	//	glm::rotate(glm::mat4(1.0f), glm::radians(70.0f), glm::normalize(glm::vec3(3.0f, 0.0f, 1.0f))), objectShaderProgram
+	//);
+	//sceneBuilder->AddForce(gravity);
+
+	//sceneBuilder->AddBox(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.1f, 0.1f, 0.1f), collisionVolumesShaderProgram,
+	//	5.0f, false, 0.9f, 0.9f, glm::vec3(0.0f), glm::vec3(2.0f, 5.0f, 1.0f));
 
 
 	sceneBuilder->BuildSnookerBall(

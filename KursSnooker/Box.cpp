@@ -17,9 +17,9 @@ void Box::Draw(glm::mat4 proj, glm::mat4 view)
 
     shaderProgram.setMat4("projection", proj);
     shaderProgram.setMat4("view", view);
-    shaderProgram.setMat4("model", this->transform);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    shaderProgram.setMat4("model", this->GetTransform());
     glBindVertexArray(VAO);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.Size()), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -40,43 +40,44 @@ void Box::setUpDraw()
 void Box::setUpVertices()
 {
     VertexData vertex;
-    vertex.Position = glm::vec3(this->offset[3]) + HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position = HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
-    vertex.Position = glm::vec3(this->offset[3]) + HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position = HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
-    vertex.Position = glm::vec3(this->offset[3]) + HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position = HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
-    vertex.Position = glm::vec3(this->offset[3]) + HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position = HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
-    vertex.Position = glm::vec3(this->offset[3]) - HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position = - HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
-    vertex.Position = glm::vec3(this->offset[3]) - HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position =  - HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) + HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
-    vertex.Position = glm::vec3(this->offset[3]) - HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position =  - HalfSize.x * glm::normalize(GetAxis(0)) - HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
-    vertex.Position = glm::vec3(this->offset[3]) - HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
+    vertex.Position =  - HalfSize.x * glm::normalize(GetAxis(0)) + HalfSize.y * glm::normalize(GetAxis(1)) - HalfSize.z * glm::normalize(GetAxis(2));
     vertices.AddVertice(vertex);
 }
 
 void Box::setUpIndices()
 {
-    setUpTriangleIndices(0, 1, 2);
-    setUpTriangleIndices(0, 2, 3);
-    setUpTriangleIndices(4, 5, 6);
-    setUpTriangleIndices(4, 6, 7);
+    setUpTriangleIndices(1, 2, 3);
+    setUpTriangleIndices(2, 4, 3);
+    setUpTriangleIndices(1, 4, 5);
+    setUpTriangleIndices(1, 4, 8);
+    setUpTriangleIndices(5, 8, 7);
+    setUpTriangleIndices(5, 8, 6);
+    setUpTriangleIndices(3, 7, 6);
+    setUpTriangleIndices(2, 7, 6);
+    setUpTriangleIndices(1, 6, 5);
+    setUpTriangleIndices(1, 2, 5);
+    setUpTriangleIndices(1, 6, 5);
     setUpTriangleIndices(3, 4, 7);
-    setUpTriangleIndices(0, 3, 4);
-    setUpTriangleIndices(3, 6, 7);
-    setUpTriangleIndices(2, 3, 6);
-    setUpTriangleIndices(1, 2, 6);
-    setUpTriangleIndices(1, 5, 6);
-    setUpTriangleIndices(0, 4, 5);
-    setUpTriangleIndices(0, 1, 5);
+    setUpTriangleIndices(3, 4, 8);
 }
 
 void Box::setUpTriangleIndices(unsigned int i1, unsigned int i2, unsigned int i3)
 {
-    indices.AddIndex(i1);
-    indices.AddIndex(i2);
-    indices.AddIndex(i3);
+    indices.AddIndex(i1 - 1);
+    indices.AddIndex(i2 - 1);
+    indices.AddIndex(i3 - 1);
 }
