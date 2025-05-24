@@ -42,7 +42,7 @@ private:
 	std::unique_ptr<ForceRegistry> fr;
 
 	bool isMouseCaptured = true;
-	bool isPaused = false;
+	bool isPaused = true;
 	bool nextFrame = false;
 	bool isNextFrameAlready = false;
 

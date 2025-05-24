@@ -147,6 +147,7 @@
     <ClCompile Include="Contact.cpp" />
     <ClCompile Include="ContactResolver.cpp" />
     <ClCompile Include="CueBall.cpp" />
+    <ClCompile Include="DragGenerator.cpp" />
     <ClCompile Include="ForceGenerator.cpp" />
     <ClCompile Include="ForceRegistry.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Contact.h" />
     <ClInclude Include="ContactResolver.h" />
     <ClInclude Include="CueBall.h" />
+    <ClInclude Include="DragGenerator.h" />
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="ForceRegistry.h" />
     <ClInclude Include="Game.h" />

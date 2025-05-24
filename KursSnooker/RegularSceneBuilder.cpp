@@ -105,7 +105,10 @@ void RegularSceneBuilder::AddBox(glm::vec3 relativePos, glm::vec3 axisX, glm::ve
 	offset[2] = glm::vec4(axisZ, 0.0f);
 	offset = glm::translate(offset, relativePos);
 	std::unique_ptr<Box> box = std::make_unique<Box>(shaderProgram, offset, halfSize, this->scene->GetSprites().back());
-	box->body->SetMass(mass);
+	if (mass != 0.0f)
+		box->body->SetMass(mass);
+	else
+		box->body->SetInverseMass(0.0f);
 	box->body->SetLinearDamping(linearDamping);
 	box->body->SetAngularDamping(angularDamping);
 	box->body->SetVelocity(velocity);
@@ -133,7 +136,10 @@ void RegularSceneBuilder::AddSphere(glm::vec3 relativePos, glm::vec3 axisX, glm:
 	offset[2] = glm::vec4(axisZ, 0.0f);
 	offset = glm::translate(offset, relativePos);
 	std::unique_ptr<Sphere> sphere = std::make_unique<Sphere>(shaderProgram, offset, radius, this->scene->GetSprites().back());
-	sphere->body->SetMass(mass);
+	if (mass != 0.0f)
+		sphere->body->SetMass(mass);
+	else
+		sphere->body->SetInverseMass(0.0f);
 	sphere->body->SetLinearDamping(linearDamping);
 	sphere->body->SetAngularDamping(angularDamping);
 	sphere->body->SetVelocity(velocity);

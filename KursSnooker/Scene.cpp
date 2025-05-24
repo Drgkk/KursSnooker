@@ -115,7 +115,7 @@ unsigned int Scene::GenerateContacts()
 
 	cData.reset(maxContacts);
 	cData.friction = 0.05f;
-	cData.restitution = 0.6f;
+	cData.restitution = 0.3f;
 	cData.tolerance = 0.1f;
 
 	for (int i = 0; i < collisionBoundingVolumes.size(); i++) {
